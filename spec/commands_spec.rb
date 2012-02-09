@@ -6,7 +6,7 @@ describe Ccp::Commands::Core do
   # data container
   it { should respond_to(:data?) }
   it { should respond_to(:data) }
-  its(:data) { should be_kind_of(Ccp::Data::KVS) }
+  its(:data) { should be_kind_of(Typed::Hash) }
 
   # executable
   it { should respond_to(:execute) }

@@ -1,4 +1,4 @@
-require "must"
+require "typed"
 require "active_support/core_ext"
 require "ccp/version"
 require "ccp/data"
