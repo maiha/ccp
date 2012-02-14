@@ -10,9 +10,9 @@ that helps you to split spaghetti codes into pieces.
 
 There are three principles.
 
-# SRP (Single responsibility principle)
-# Typed Variables (especially needed in Ruby)
-# Explicit Data Dependencies
+1. SRP (Single responsibility principle)
+2. Typed Variables (especially needed in Ruby)
+3. Explicit Data Dependencies
 
 As you know, Ruby is a handy and powerful programming language.
 We can use variables without definitions and re-assign them even if type mismatch.
