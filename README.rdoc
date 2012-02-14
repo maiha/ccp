@@ -1,0 +1,109 @@
+= ccp
+
+CCP is a Ruby library for Composite Command Programming
+that helps you to split spaghetti codes into pieces.
+
+=== Websites
+* http://github.com/maiha/ccp
+
+== What is a Composite Command Programming?
+
+There are three principles.
+
+* 1. SRP (Single responsibility principle)
+* 2. Typed Variables (especially needed in Ruby)
+* 3. Explicit Data Dependencies
+
+As you know, Ruby is a handy and powerful programming language.
+We can use variables without definitions and re-assign them even if type mismatch.
+Although it is very comfortable while you are writing, it would be painful for others.
+
+CCP is a framework composed with above principles and a few debugging utils
+that gives you(as writer) a little restrictions and gives you(as reader) a readability.
+
+
+== Example
+=== usual ruby code
+
+  class SomeOperation
+    def execute
+      # fetching data
+      # calculating it
+      # print results
+    end
+  end
+
+Later, it would be a more complex and longer code like this.
+
+  class SomeOperation
+    def execute
+      @data = fetch_data
+      ...
+      @result = calculate(@data)
+      ...
+      print_results(@result)
+    end
+
+    def fetching_data
+      # accessing instance variables, and long code here
+      ...
+
+Let's imagine a situation that you need to replace above "fetch" code after several years.
+It is too hard to see data dependencies especially about instance variables.
+
+=== with CCP
+
+  class SomeOperation
+    include Ccp::Commands::Composite
+
+    command FetchData
+    command Calculate
+    command PrintResult
+  end
+
+  class FetchData                                # 1. SRP 
+    include Ccp::Commands::Core
+
+    # {pre,post} methods can be used like Design By Contract
+    def post
+      data.check(:fetched, {Symbol => [Float]})  # 2. Typed Variables
+    end
+
+    def execute
+      # fetching data...
+      data[:fetched] = ...                       # 3. Data Dependencies
+    end
+  end
+
+  class Calculate
+    ...
+
+
+All sub commands like FetchData,Calculate,PrintResult will be executed
+in each scopes, and can share variables only via data object.
+
+You can easily refactor or replace FetchData unit
+because there are no implicit instance variable dependencies
+and futhermore all depencenies would be explicitly declared in "pre","post" method.
+
+=== execute
+
+Just call a "execute" instance method.
+
+  cmd = SomeOperation.new
+  cmd.execute
+
+=== invokers
+
+Invokers::Base can be used as a top level composite command.
+Its "benchmark" method generates profile information.
+
+  class SomeOperation < Ccp::Invokers::Base
+    command FetchData
+    ...
+
+  ruby -r some_operation -e 'SomeOperation.new.benchmark'
+  [43.3%] 2.5834830 FetchData#execute
+  [35.9%] 2.0710440 Calculate#execute
+  ...
+

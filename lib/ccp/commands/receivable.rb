@@ -5,7 +5,7 @@ module Ccp
       ### Receiver Methods
 
       def receiver
-        @receiver ||= Ccp::Receivers::None.new
+        @receiver ||= Ccp::Receivers::Base.new
       end
 
       def receiver=(value)

@@ -9,8 +9,8 @@ module Ccp
 
       ### Profiling
 
-      def benchmark(method = :execute)
-        receiver.profile(self, method)
+      def benchmark
+        receiver.profile(self, :execute)
       end
     end
   end

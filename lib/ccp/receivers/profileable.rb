@@ -16,12 +16,10 @@ module Ccp
 
       def profile(target, method)
         start = Time.new
-        target.pre if target.must.duck?(:pre)
+        target.__send__(:pre) if target.respond_to?(:pre)
         target.__send__(method)
-        target.post if target.must.duck?(:post)
-        target.must.duck(:no_bench) {
-          profiles << Profile.new(target, method, (Time.new - start).to_f)
-        }
+        target.__send__(:post) if target.respond_to?(:post)
+        profiles << Profile.new(target, method, (Time.new - start).to_f)
       end
 
       def profiles

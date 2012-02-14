@@ -56,12 +56,6 @@ module Ccp
       ######################################################################
       ### Enumerable
 
-      def <<(command)
-        command = command.new if command.is_a?(Class) and command.ancestors.include?(Core)
-        command.must(Core)
-        commands << command
-      end
-
       def commands
         @commands ||= build_commands.must(Array)
       end
@@ -70,19 +64,18 @@ module Ccp
       ### Commands
 
       def execute
-        benchmark
+        commands.each(&:benchmark)
       end
 
-      def benchmark
-        pre if respond_to?(:pre)
-        commands.each(&:benchmark)
-        post if respond_to?(:post)
+      def receiver=(value)
+        super
+        commands.each{|c| c.receiver = value}
       end
 
       private
         def build_commands
           array = self.class.commands.select{|c| c.cond.nil? or instance_eval(&c.cond)}
-          array.map{|c|
+          cmds  = array.map{|c|
             c = c.klass.new(*c.args)
             c.receiver = receiver
             c
