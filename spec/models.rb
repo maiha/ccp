@@ -62,3 +62,7 @@ class CompositeProgram
   command Cmd23
   command Cmd4
 end
+
+class CompositeInvoker < Ccp::Invokers::Base
+  command CompositeProgram
+end

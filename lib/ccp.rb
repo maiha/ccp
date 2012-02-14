@@ -1,4 +1,5 @@
 require "typed"
+require "dsl_accessor"
 require "active_support/core_ext"
 require "ccp/version"
 require "ccp/data"

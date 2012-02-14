@@ -30,10 +30,6 @@ module Ccp
         data.default(:logger) { Logger.new($stderr) }
       end
 
-      def execute
-        benchmark
-      end
-
       def benchmark
         before
         super
