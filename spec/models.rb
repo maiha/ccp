@@ -27,10 +27,19 @@ class Cmd4 < Cmd1; end
 
 class Program
   include Ccp::Commands::Composite
+  include Breadcrumbing
 
   command Cmd1
   command Cmd2
   command Cmd3
+
+  def pre
+    data[:breadcrumbs] << this
+  end
+
+  def post
+    data[:breadcrumbs] << this
+  end
 end
 
 class Cmd23
@@ -57,12 +66,33 @@ end
 
 class CompositeProgram
   include Ccp::Commands::Composite
+  include Breadcrumbing
 
   command Cmd1
   command Cmd23
   command Cmd4
+
+  def pre
+    data[:breadcrumbs] << this
+  end
+
+  def post
+    data[:breadcrumbs] << this
+  end
 end
 
 class CompositeInvoker < Ccp::Invokers::Base
-  command CompositeProgram
+  include Breadcrumbing
+
+  command Cmd1
+  command Cmd23
+  command Cmd4
+
+  def pre
+    data[:breadcrumbs] << this
+  end
+
+  def post
+    data[:breadcrumbs] << this
+  end
 end

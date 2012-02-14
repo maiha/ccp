@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Ccp::Commands::Composite do
   describe "#execute" do
-    it "should call sub commands's {pre,execute,post} in declared order" do
+    it "should call its execute and sub commands's {pre,execute,post} in declared order" do
       c = Program.new
       c.data[:breadcrumbs] = []
       c.execute
@@ -14,21 +14,23 @@ describe Ccp::Commands::Composite do
   end
 
   describe "#benchmark" do
-    it "should call sub commands's {pre,execute,post} in declared order" do
+    it "should call its and sub commands's {pre,execute,post} in declared order" do
       c = Program.new
       c.data[:breadcrumbs] = []
       c.benchmark
       c.data[:breadcrumbs].should ==
-        ["Cmd1#pre", "Cmd1#execute", "Cmd1#post",
+        ["Program#pre",
+         "Cmd1#pre", "Cmd1#execute", "Cmd1#post",
          "Cmd2#pre", "Cmd2#execute", "Cmd2#post",
-         "Cmd3#pre", "Cmd3#execute", "Cmd3#post"]
+         "Cmd3#pre", "Cmd3#execute", "Cmd3#post",
+         "Program#post"]
     end
   end
 end
 
 describe "Ccp::Commands::Composite(nested)" do
   describe "#execute" do
-    it "should call sub commands's {pre,execute,post} in declared order" do
+    it "should call its execute and sub commands's {pre,execute,post} in declared order" do
       c = CompositeProgram.new
       c.data[:breadcrumbs] = []
       c.execute
@@ -45,19 +47,21 @@ describe "Ccp::Commands::Composite(nested)" do
   end
 
   describe "#benchmark" do
-    it "should call sub commands's {pre,execute,post} in declared order" do
+    it "should call its and sub commands's {pre,execute,post} in declared order" do
       c = CompositeProgram.new
       c.data[:breadcrumbs] = []
       c.benchmark
       c.data[:breadcrumbs].should ==
-        ["Cmd1#pre", "Cmd1#execute", "Cmd1#post",
+        ["CompositeProgram#pre",
+         "Cmd1#pre", "Cmd1#execute", "Cmd1#post",
          "Cmd23#pre",
          "Cmd23#execute:start",
          "Cmd2#pre", "Cmd2#execute", "Cmd2#post",
          "Cmd3#pre", "Cmd3#execute", "Cmd3#post",
          "Cmd23#execute:end",
          "Cmd23#post",
-         "Cmd4#pre", "Cmd4#execute", "Cmd4#post"]
+         "Cmd4#pre", "Cmd4#execute", "Cmd4#post",
+         "CompositeProgram#post"]
     end
   end
 

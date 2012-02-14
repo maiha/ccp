@@ -19,7 +19,13 @@ module Ccp
         target.__send__(:pre) if target.respond_to?(:pre)
         target.__send__(method)
         target.__send__(:post) if target.respond_to?(:post)
-        profiles << Profile.new(target, method, (Time.new - start).to_f)
+
+        case target
+        when Ccp::Commands::Composite
+          # no profiles
+        else
+          profiles << Profile.new(target, method, (Time.new - start).to_f)
+        end
       end
 
       def profiles

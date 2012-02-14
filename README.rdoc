@@ -10,9 +10,9 @@ that helps you to split spaghetti codes into pieces.
 
 There are three principles.
 
-* 1. SRP (Single responsibility principle)
-* 2. Typed Variables (especially needed in Ruby)
-* 3. Explicit Data Dependencies
+# SRP (Single responsibility principle)
+# Typed Variables (especially needed in Ruby)
+# Explicit Data Dependencies
 
 As you know, Ruby is a handy and powerful programming language.
 We can use variables without definitions and re-assign them even if type mismatch.
@@ -79,10 +79,10 @@ It is too hard to see data dependencies especially about instance variables.
     ...
 
 
-All sub commands like FetchData,Calculate,PrintResult will be executed
+All sub commands like FetchData,Calculate,PrintResult are executed
 in each scopes, and can share variables only via data object.
 
-You can easily refactor or replace FetchData unit
+So you can easily refactor or replace FetchData unit
 because there are no implicit instance variable dependencies
 and futhermore all depencenies would be explicitly declared in "pre","post" method.
 
@@ -96,11 +96,13 @@ Just call a "execute" instance method.
 === invokers
 
 Invokers::Base can be used as a top level composite command.
-Its "benchmark" method generates profile information.
 
   class SomeOperation < Ccp::Invokers::Base
     command FetchData
     ...
+
+
+Its "benchmark" method generates profile information.
 
   ruby -r some_operation -e 'SomeOperation.new.benchmark'
   [43.3%] 2.5834830 FetchData#execute

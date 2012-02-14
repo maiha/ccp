@@ -12,22 +12,49 @@ module Ccp
       DEFAULT_OPTIONS = {
         :profile => false,
         :comment => true,
+        :logger  => Logger.new($stderr),
       }
+
+      ######################################################################
+      ### Class Methods
+
+      def self.execute(options = {}, &block)
+        cmd = new(options)
+        if block_given?
+          cmd.instance_eval(&block)
+        end
+        cmd.benchmark
+        return cmd
+      end
+
+      def self.benchmark(options = {}, &block)
+        execute({:profile => true}.merge(options), &block)
+      end
 
       ######################################################################
       ### Instance Methods
 
       def initialize(options = nil)
-        self.receiver = self.class.receiver.new
-        self.class.prepend_command Commands::RuntimeArgs, options
+        options ||= {}
+        set_default_receiver(options[:receiver])
         set_default_options
+        set_runtime_options(options)
+      end
+
+      def set_default_receiver(receiver)
+        self.receiver = receiver || self.class.receiver.new
       end
 
       def set_default_options
         self.class::DEFAULT_OPTIONS.each_pair do |key,val|
           data.default[key] = val
         end
-        data.default(:logger) { Logger.new($stderr) }
+      end
+
+      def set_runtime_options(options)
+        options.each_pair do |key,val|
+          data[key] = val
+        end
       end
 
       def benchmark
