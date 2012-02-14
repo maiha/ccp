@@ -8,7 +8,7 @@ class Cmd1
   include Ccp::Commands::Core
   include Breadcrumbing
 
-  def pre
+  def before
     data[:breadcrumbs] << this
   end
 
@@ -16,7 +16,7 @@ class Cmd1
     data[:breadcrumbs] << this
   end
 
-  def post
+  def after
     data[:breadcrumbs] << this
   end
 end
@@ -33,11 +33,11 @@ class Program
   command Cmd2
   command Cmd3
 
-  def pre
+  def before
     data[:breadcrumbs] << this
   end
 
-  def post
+  def after
     data[:breadcrumbs] << this
   end
 end
@@ -49,7 +49,7 @@ class Cmd23
   command Cmd2
   command Cmd3
 
-  def pre
+  def before
     data[:breadcrumbs] << this
   end
 
@@ -59,7 +59,7 @@ class Cmd23
     data[:breadcrumbs] << this + ":end"
   end
 
-  def post
+  def after
     data[:breadcrumbs] << this
   end
 end
@@ -72,11 +72,11 @@ class CompositeProgram
   command Cmd23
   command Cmd4
 
-  def pre
+  def before
     data[:breadcrumbs] << this
   end
 
-  def post
+  def after
     data[:breadcrumbs] << this
   end
 end
@@ -88,11 +88,12 @@ class CompositeInvoker < Ccp::Invokers::Base
   command Cmd23
   command Cmd4
 
-  def pre
+  def before
     data[:breadcrumbs] << this
   end
 
-  def post
+  def after
     data[:breadcrumbs] << this
+    super
   end
 end

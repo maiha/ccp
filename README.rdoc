@@ -64,8 +64,8 @@ It is too hard to see data dependencies especially about instance variables.
   class FetchData                                # 1. SRP 
     include Ccp::Commands::Core
 
-    # {pre,post} methods can be used like Design By Contract
-    def post
+    # {before,after} methods can be used like Design By Contract
+    def after
       data.check(:fetched, {Symbol => [Float]})  # 2. Typed Variables
     end
 
@@ -84,7 +84,7 @@ in each scopes, and can share variables only via data object.
 
 So you can easily refactor or replace FetchData unit
 because there are no implicit instance variable dependencies
-and futhermore all depencenies would be explicitly declared in "pre","post" method.
+and futhermore all depencenies would be explicitly declared in "before","after" method.
 
 === execute
 

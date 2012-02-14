@@ -28,11 +28,11 @@ describe Ccp::Commands::Core do
   end
 
   describe "#benchmark" do
-    it "should call {pre,execute,post}" do
+    it "should call {before,execute,after}" do
       cmd1 = Cmd1.new
       cmd1.data[:breadcrumbs] = []
       cmd1.benchmark
-      cmd1.data[:breadcrumbs].should == ["Cmd1#pre", "Cmd1#execute", "Cmd1#post"]
+      cmd1.data[:breadcrumbs].should == ["Cmd1#before", "Cmd1#execute", "Cmd1#after"]
     end
 
     it "should call receiver.profile" do

@@ -2,66 +2,66 @@ require "spec_helper"
 
 describe Ccp::Commands::Composite do
   describe "#execute" do
-    it "should call its execute and sub commands's {pre,execute,post} in declared order" do
+    it "should call its execute and sub commands's {before,execute,after} in declared order" do
       c = Program.new
       c.data[:breadcrumbs] = []
       c.execute
       c.data[:breadcrumbs].should ==
-        ["Cmd1#pre", "Cmd1#execute", "Cmd1#post",
-         "Cmd2#pre", "Cmd2#execute", "Cmd2#post",
-         "Cmd3#pre", "Cmd3#execute", "Cmd3#post"]
+        ["Cmd1#before", "Cmd1#execute", "Cmd1#after",
+         "Cmd2#before", "Cmd2#execute", "Cmd2#after",
+         "Cmd3#before", "Cmd3#execute", "Cmd3#after"]
     end
   end
 
   describe "#benchmark" do
-    it "should call its and sub commands's {pre,execute,post} in declared order" do
+    it "should call its and sub commands's {before,execute,after} in declared order" do
       c = Program.new
       c.data[:breadcrumbs] = []
       c.benchmark
       c.data[:breadcrumbs].should ==
-        ["Program#pre",
-         "Cmd1#pre", "Cmd1#execute", "Cmd1#post",
-         "Cmd2#pre", "Cmd2#execute", "Cmd2#post",
-         "Cmd3#pre", "Cmd3#execute", "Cmd3#post",
-         "Program#post"]
+        ["Program#before",
+         "Cmd1#before", "Cmd1#execute", "Cmd1#after",
+         "Cmd2#before", "Cmd2#execute", "Cmd2#after",
+         "Cmd3#before", "Cmd3#execute", "Cmd3#after",
+         "Program#after"]
     end
   end
 end
 
 describe "Ccp::Commands::Composite(nested)" do
   describe "#execute" do
-    it "should call its execute and sub commands's {pre,execute,post} in declared order" do
+    it "should call its execute and sub commands's {before,execute,after} in declared order" do
       c = CompositeProgram.new
       c.data[:breadcrumbs] = []
       c.execute
       c.data[:breadcrumbs].should ==
-        ["Cmd1#pre", "Cmd1#execute", "Cmd1#post",
-         "Cmd23#pre",
+        ["Cmd1#before", "Cmd1#execute", "Cmd1#after",
+         "Cmd23#before",
          "Cmd23#execute:start",
-         "Cmd2#pre", "Cmd2#execute", "Cmd2#post",
-         "Cmd3#pre", "Cmd3#execute", "Cmd3#post",
+         "Cmd2#before", "Cmd2#execute", "Cmd2#after",
+         "Cmd3#before", "Cmd3#execute", "Cmd3#after",
          "Cmd23#execute:end",
-         "Cmd23#post",
-         "Cmd4#pre", "Cmd4#execute", "Cmd4#post"]
+         "Cmd23#after",
+         "Cmd4#before", "Cmd4#execute", "Cmd4#after"]
     end
   end
 
   describe "#benchmark" do
-    it "should call its and sub commands's {pre,execute,post} in declared order" do
+    it "should call its and sub commands's {before,execute,after} in declared order" do
       c = CompositeProgram.new
       c.data[:breadcrumbs] = []
       c.benchmark
       c.data[:breadcrumbs].should ==
-        ["CompositeProgram#pre",
-         "Cmd1#pre", "Cmd1#execute", "Cmd1#post",
-         "Cmd23#pre",
+        ["CompositeProgram#before",
+         "Cmd1#before", "Cmd1#execute", "Cmd1#after",
+         "Cmd23#before",
          "Cmd23#execute:start",
-         "Cmd2#pre", "Cmd2#execute", "Cmd2#post",
-         "Cmd3#pre", "Cmd3#execute", "Cmd3#post",
+         "Cmd2#before", "Cmd2#execute", "Cmd2#after",
+         "Cmd3#before", "Cmd3#execute", "Cmd3#after",
          "Cmd23#execute:end",
-         "Cmd23#post",
-         "Cmd4#pre", "Cmd4#execute", "Cmd4#post",
-         "CompositeProgram#post"]
+         "Cmd23#after",
+         "Cmd4#before", "Cmd4#execute", "Cmd4#after",
+         "CompositeProgram#after"]
     end
   end
 

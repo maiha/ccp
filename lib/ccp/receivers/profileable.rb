@@ -16,9 +16,9 @@ module Ccp
 
       def profile(target, method)
         start = Time.new
-        target.__send__(:pre) if target.respond_to?(:pre)
+        target.__send__(:before) if target.respond_to?(:before)
         target.__send__(method)
-        target.__send__(:post) if target.respond_to?(:post)
+        target.__send__(:after) if target.respond_to?(:after)
 
         case target
         when Ccp::Commands::Composite

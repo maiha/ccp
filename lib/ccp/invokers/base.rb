@@ -57,13 +57,6 @@ module Ccp
         end
       end
 
-      def benchmark
-        before
-        super
-        after
-        return true
-      end
-
       def receiver
         @receiver.must(Receivers::Base)
       end
@@ -72,14 +65,10 @@ module Ccp
         @receiver = value.must(Receivers::Base)
       end
 
-      private
-        def before
-        end
-
-        def after
-          show_profiles if data?(:profile)
-          show_comments if data?(:comment)
-        end
+      def after
+        show_profiles if data?(:profile)
+        show_comments if data?(:comment)
+      end
     end
   end
 end
