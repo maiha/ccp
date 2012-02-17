@@ -31,7 +31,7 @@ module Ccp
 
         def append_command(klass, *args, &block)
           klass = resolve(klass)
-          if commands.find{|cc| cc.klass == klass}
+          if commands.find{|cc| cc.klass == klass and cc.args == args}
             # ignore: already added
           else
             commands << CommandClass.new(klass, args, block)

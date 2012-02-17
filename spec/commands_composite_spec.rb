@@ -26,6 +26,45 @@ describe Ccp::Commands::Composite do
          "Program#after"]
     end
   end
+
+  describe ".command" do
+    ArgedCmd = Struct.new(:a,:b,:c) {
+      include Ccp::Commands::Core
+      def execute
+        data[:args] = [a,b,c]
+      end
+    }
+
+    it "should pass given args to initializer" do
+      parent = Class.new { include Ccp::Commands::Composite
+        command ArgedCmd
+      }.new
+      parent.execute
+      parent.data[:args].should == [nil,nil,nil]
+
+      parent = Class.new { include Ccp::Commands::Composite
+        command ArgedCmd, 1, "x"
+      }.new
+      parent.execute
+      parent.data[:args].should == [1, "x", nil]
+    end
+
+    it "should ignore same commands" do
+      composite = Class.new { include Ccp::Commands::Composite
+        command ArgedCmd
+        command ArgedCmd
+      }
+      composite.commands.size.should == 1
+    end
+
+    it "should distinct command's args" do
+      composite = Class.new { include Ccp::Commands::Composite
+        command ArgedCmd
+        command ArgedCmd, 1
+      }
+      composite.commands.size.should == 2
+    end
+  end
 end
 
 describe "Ccp::Commands::Composite(nested)" do
