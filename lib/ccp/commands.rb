@@ -7,6 +7,7 @@ module Ccp
     autoload :RuntimeArgs    , 'ccp/commands/runtime_args'
     autoload :Commentable    , 'ccp/commands/commentable'
     autoload :Core           , 'ccp/commands/core'
+    autoload :Base           , 'ccp/commands/base'
     autoload :Resolvable     , 'ccp/commands/resolvable'
   end
 end
