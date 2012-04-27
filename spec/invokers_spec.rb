@@ -20,25 +20,6 @@ describe Ccp::Invokers::Base do
     end
   end
 
-  describe "#benchmark" do
-    it "should call its and sub commands's {before,execute,after} in declared order" do
-      c = CompositeInvoker.new
-      c.data[:breadcrumbs] = []
-      c.benchmark
-      c.data[:breadcrumbs].should ==
-        ["CompositeInvoker#before",
-         "Cmd1#before", "Cmd1#execute", "Cmd1#after",
-         "Cmd23#before",
-         "Cmd23#execute:start",
-         "Cmd2#before", "Cmd2#execute", "Cmd2#after",
-         "Cmd3#before", "Cmd3#execute", "Cmd3#after",
-         "Cmd23#execute:end",
-         "Cmd23#after",
-         "Cmd4#before", "Cmd4#execute", "Cmd4#after",
-         "CompositeInvoker#after"]
-    end
-  end
-
   describe ".execute" do
     it "should call its and sub commands's {before,execute,after} in declared order" do
       c = CompositeInvoker.execute(:breadcrumbs => [])
@@ -75,13 +56,13 @@ describe Ccp::Invokers::Base do
     end
   end
 
-  describe ".benchmark" do
+  describe ".execute" do
     it "should call its and sub commands's {before,execute,after} in declared order" do
       r = Ccp::Receivers::Base.new
       r.stub!(:show_comments)   # disable output
       r.stub!(:show_profiles)   # disable output
 
-      c = CompositeInvoker.benchmark(:receiver => r, :breadcrumbs => [])
+      c = CompositeInvoker.execute(:receiver => r, :breadcrumbs => [])
       c.data[:breadcrumbs].should ==
         ["CompositeInvoker#before",
          "Cmd1#before", "Cmd1#execute", "Cmd1#after",
@@ -98,22 +79,20 @@ describe Ccp::Invokers::Base do
     it "should call only show_comments in default" do
       r = Ccp::Receivers::Base.new
       r.should_receive(:show_comments).once
-      r.should_receive(:show_profiles).once
-      CompositeInvoker.benchmark(:receiver => r, :breadcrumbs => [])
+      r.should_receive(:show_profiles).never
+      CompositeInvoker.execute(:receiver => r, :breadcrumbs => [])
     end
 
-    it "should disable show_profiles if :profile option is false" do
+    it "should disable show_profiles if :profile option is set" do
       r = Ccp::Receivers::Base.new
-      r.should_receive(:show_comments).once
-      r.should_receive(:show_profiles).never
-      CompositeInvoker.benchmark(:receiver => r, :breadcrumbs => [], :profile => false)
+      r.should_receive(:show_profiles).once
+      CompositeInvoker.execute(:receiver => r, :breadcrumbs => [], :profile => true)
     end
 
     it "should disable show_comments if :comment option is false" do
       r = Ccp::Receivers::Base.new
       r.should_receive(:show_comments).never
-      r.should_receive(:show_profiles).once
-      CompositeInvoker.benchmark(:receiver => r, :breadcrumbs => [], :comment => false)
+      CompositeInvoker.execute(:receiver => r, :breadcrumbs => [], :comment => false)
     end
   end
 end

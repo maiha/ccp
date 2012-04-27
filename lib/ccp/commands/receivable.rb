@@ -5,10 +5,11 @@ module Ccp
       ### Receiver Methods
 
       def receiver
-        @receiver ||= Ccp::Receivers::Base.new
+        (@receiver ||= Ccp::Receivers::Base.new).must(Receivers::Base)
       end
 
       def receiver=(value)
+        return unless value
         @receiver = value.must(Ccp::Receivers::Base)
       end
 

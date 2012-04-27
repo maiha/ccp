@@ -14,17 +14,15 @@ module Ccp
         end
       end
 
-      def profile(target, method)
+      def profile(target, &block)
         start = Time.new
-        target.__send__(:before) if target.respond_to?(:before)
-        target.__send__(method)
-        target.__send__(:after) if target.respond_to?(:after)
+        block.call
 
         case target
         when Ccp::Commands::Composite
           # no profiles
         else
-          profiles << Profile.new(target, method, (Time.new - start).to_f)
+          profiles << Profile.new(target, "execute", (Time.new - start).to_f)
         end
       end
 

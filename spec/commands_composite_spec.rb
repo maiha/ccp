@@ -13,11 +13,9 @@ describe Ccp::Commands::Composite do
     end
   end
 
-  describe "#benchmark" do
+  describe ".execute" do
     it "should call its and sub commands's {before,execute,after} in declared order" do
-      c = Program.new
-      c.data[:breadcrumbs] = []
-      c.benchmark
+      c = Program.execute(:receiver=>breadcrumbs_receiver)
       c.data[:breadcrumbs].should ==
         ["Program#before",
          "Cmd1#before", "Cmd1#execute", "Cmd1#after",
@@ -85,11 +83,9 @@ describe "Ccp::Commands::Composite(nested)" do
     end
   end
 
-  describe "#benchmark" do
+  describe ".execute" do
     it "should call its and sub commands's {before,execute,after} in declared order" do
-      c = CompositeProgram.new
-      c.data[:breadcrumbs] = []
-      c.benchmark
+      c = CompositeProgram.execute(:receiver=>breadcrumbs_receiver)
       c.data[:breadcrumbs].should ==
         ["CompositeProgram#before",
          "Cmd1#before", "Cmd1#execute", "Cmd1#after",
