@@ -5,3 +5,10 @@ require 'rspec'
 require 'ccp'
 
 require File.join(File.dirname(__FILE__), "models")
+
+def breadcrumbs_receiver
+  r = Ccp::Receivers::Base.new
+  r.data[:breadcrumbs] = [] 
+  return r
+end
+

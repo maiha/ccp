@@ -95,16 +95,22 @@ Just call a "execute" instance method.
 
 === invokers
 
-Invokers::Base can be used as a top level composite command.
+Invokers::Base is a top level composite command.
+It acts same as composite except some special options.
+Those are profile, comment, logger.
 
   class SomeOperation < Ccp::Invokers::Base
-    command FetchData
+    command FetchData   # same as composite
+    command Calculate   # same as composite
     ...
 
+    profile true        # default false
+    comment false       # default true
+    ...
 
-Its "benchmark" method generates profile information.
+This profile option prints benchmarks of commands.
 
-  ruby -r some_operation -e 'SomeOperation.new.benchmark'
+  ruby -r some_operation -e 'SomeOperation.execute'
   [43.3%] 2.5834830 FetchData#execute
   [35.9%] 2.0710440 Calculate#execute
   ...

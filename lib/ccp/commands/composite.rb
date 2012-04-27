@@ -2,8 +2,10 @@ module Ccp
   module Commands
     module Composite
       def self.included(base)
+        super
         base.class_eval do
           extend ClassMethods
+          extend Executable::ClassMethods
         end
       end
 
@@ -64,7 +66,9 @@ module Ccp
       ### Commands
 
       def execute
-        commands.each(&:benchmark)
+        commands.each do |c|
+          c.receiver.execute(c)
+        end
       end
 
       def receiver=(value)

@@ -2,6 +2,7 @@ module Ccp
   module Receivers
     class Base
       include Ccp::Data
+      include Executable
       include Profileable
       include Commentable
 
