@@ -14,15 +14,15 @@ module Ccp
         end
       end
 
-      def profile(target, &block)
+      def execute(cmd)
         start = Time.new
-        block.call
+        super
 
-        case target
+        case cmd
         when Ccp::Commands::Composite
           # no profiles
         else
-          profiles << Profile.new(target, "execute", (Time.new - start).to_f)
+          profiles << Profile.new(cmd, "execute", (Time.new - start).to_f)
         end
       end
 
