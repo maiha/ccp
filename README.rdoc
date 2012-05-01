@@ -115,3 +115,71 @@ This profile option prints benchmarks of commands.
   [35.9%] 2.0710440 Calculate#execute
   ...
 
+
+== Fixtures
+
+Let's imagine a following command that just read :a and write :x.
+
+    class TSFC                  # TestSaveFixtureCmd
+      include Ccp::Commands::Core
+
+      def execute
+        data[:a]                # read
+        data[:x] = 10           # write
+      end
+    end
+
+This may be a part of sequncial commands. 
+When we want to test only this command, usually we should prepare
+some fixture data for the 'data' object.
+
+=== Generating fixtures
+
+Ccp can automatically generate fixture data for each commands.
+Pass :save_fixture option to 'execute' class method to enable it.
+
+  * save_fixture     : enable write fixture mode if true
+  * save_fixture_dir : set root dir of fixture (default: tmp/fixtures)
+
+In above example, we can kick it with data[:a] like this.
+
+    TSFC.execute(:a => 1)
+
+And if you want to geneate fixures for this command, just add :save_fixture.
+
+    TSFC.execute(:a => 1, :save_fixture => true)
+
+This will create following files.
+
+  % tree tmp/fixtures
+  tmp/fixtures
+  └── tsfc
+      ├── in.yaml
+      └── out.yaml
+  
+  1 directory, 2 files    
+  % cat tmp/fixtures/tsfc/*
+  --- 
+  :a: 1
+  --- 
+  :x: 10
+
+=== Writing tests
+
+Use them as stubs and expected data as you like.
+
+  describe TSFC do
+    it "should work" do
+      data     = YAML.load(Pathname("tmp/fixtures/tsfc/in.yaml").read{})
+      expected = YAML.load(Pathname("tmp/fixtures/tsfc/out.yaml").read{})
+
+      cmd = TSFC.execute(data)
+
+      expected.each_pair do |key, val|
+        cmd.data[key].should == val
+      end
+    end
+  end
+
+This code is highly versatile.
+

@@ -29,5 +29,9 @@ module Ccp
     def data?(key)
       data.set?(key)
     end
+
+    def parse!(options)
+      data.merge(options)
+    end
   end
 end

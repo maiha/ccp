@@ -11,7 +11,7 @@ module Ccp
         def execute(options = {})
           c = new
           c.receiver = options.delete(:receiver)
-          c.receiver.data.merge(options)
+          c.receiver.parse!(options)
           c.receiver.execute(c)
           return c
         end

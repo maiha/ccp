@@ -2,9 +2,13 @@ module Ccp
   module Receivers
     class Base
       include Ccp::Data
+      include Commentable
+
+      # for execute
       include Executable
       include Profileable
-      include Commentable
+      include Aroundable
+      include SaveFixture
 
       def inspect
         klass_name = self.class.name.to_s.split(/::/).last
