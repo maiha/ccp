@@ -4,7 +4,7 @@ module Ccp
 
       Comment = Struct.new(:text, :level)
       class Comment
-        include Colorize
+        include Utils::Colorize
         def colorized
           case level
           when :warn          ; yellow(text)
