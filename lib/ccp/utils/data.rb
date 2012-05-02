@@ -3,8 +3,8 @@
 require 'pathname'
 
 module Ccp
-  module Data
-    module Ext
+  module Utils
+    class Data < Typed::Hash
       def path(key)
         self[key].must.coerced(Pathname, String=>proc{|i| Pathname(i)})
       end
@@ -20,18 +20,6 @@ module Ccp
           default[key] = val
         end
       end
-    end
-
-    def data
-      @data ||= Typed::Hash.new.extend Ext
-    end
-
-    def data?(key)
-      data.set?(key)
-    end
-
-    def parse!(options)
-      data.merge(options)
     end
   end
 end

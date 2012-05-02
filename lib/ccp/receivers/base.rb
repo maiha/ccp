@@ -1,20 +1,19 @@
 module Ccp
   module Receivers
     class Base
-      include Ccp::Data
+      include Core
+      include Settings
+      include Variables
       include Commentable
 
       # for execute
       include Executable
       include Profileable
       include Aroundable
-      include SaveFixture
+      include Fixtures
 
-      def inspect
-        klass_name = self.class.name.to_s.split(/::/).last
-
-        "#<Receivers::#{klass_name} data:#{data.inspect}>"
-      end
+      # ensure to call '#setup' for module initializations
+      def self.new(*args) r = super; r.setup; r; end
     end
   end
 end

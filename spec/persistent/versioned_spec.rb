@@ -3,7 +3,7 @@ require 'spec_helper'
 require 'fileutils'
 
 describe Ccp::Persistent::Versioned do
-  def root; Pathname("tmp/spec/ccp/persistent/ersioned"); end
+  def root; Pathname("tmp/spec/ccp/persistent/versioned"); end
 
   before do
     FileUtils.rm_rf(root)

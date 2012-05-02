@@ -1,8 +1,7 @@
 require "spec_helper"
 
-describe Ccp::Data do
-  subject { Object.new.extend Ccp::Data }
-  def data; subject.data; end
+describe Ccp::Utils::Data do
+  def data; subject; end
 
   ######################################################################
   ### Utils

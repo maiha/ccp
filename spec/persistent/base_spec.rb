@@ -19,6 +19,10 @@ describe Ccp::Persistent::Base do
     subject.methods.include?("exist?").should == true
   end
 
+  it "should provide #save" do
+    subject.methods.include?("save").should == true
+  end
+
   it "should provide #load!" do
     subject.methods.include?("load!").should == true
   end

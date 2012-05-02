@@ -1,7 +1,7 @@
 module Ccp
   module Receivers
     module Profileable
-      include Colorize
+      include Utils::Colorize
 
       Profile = Struct.new(:target, :method, :time)
       class Profile
