@@ -41,10 +41,9 @@ module Ccp
       end
 
       def parse!(options)
-        settings.keys.each do |key|
-          if key.to_s =~ /^fixture_/ and options.has_key?(key)
-            self[key] = options.delete(key)
-          end
+        settings.keys.grep(/^fixture_/).each do |key|
+          self[key] = options.delete(key.to_sym) if options.has_key?(key.to_sym)
+          self[key] = options.delete(key) if options.has_key?(key)
         end
         super
       end
