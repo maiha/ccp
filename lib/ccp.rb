@@ -10,4 +10,6 @@ module Ccp
   autoload :Commands,          'ccp/commands'
   autoload :Invokers,          'ccp/invokers'
   autoload :Receivers,         'ccp/receivers'
+  autoload :Persistent,        'ccp/persistent'
+  autoload :Serializers,       'ccp/serializers'
 end
