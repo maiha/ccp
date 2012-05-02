@@ -6,7 +6,7 @@ module Ccp
   module Receivers
     module Settings
       def settings
-        @settings ||= Ccp::Utils::Data.new
+        @settings ||= Typed::Hash.new
       end
 
       def [](key)

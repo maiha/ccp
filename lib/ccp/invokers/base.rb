@@ -29,8 +29,8 @@ module Ccp
 
       def initialize(options = {})
         self.receiver = options.delete(:receiver) || self.class.receiver.new
-        receiver.data.merge_default(self.class.default_options)
-        receiver.data.merge(options)
+        receiver.data.default.merge!(self.class.default_options)
+        receiver.data.merge!(options)
       end
 
       def after

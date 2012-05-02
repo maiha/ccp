@@ -6,7 +6,7 @@ module Ccp
   module Receivers
     module Variables
       def data
-        @data ||= Ccp::Utils::Data.new
+        @data ||= Typed::Hash.new
       end
 
       def data?(key)
@@ -14,7 +14,7 @@ module Ccp
       end
 
       def parse!(options)
-        data.merge(options)
+        data.merge!(options)
       end
     end
   end
