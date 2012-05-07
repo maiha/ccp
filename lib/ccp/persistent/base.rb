@@ -19,8 +19,8 @@ class Ccp::Persistent::Base
     raise NotImplementedError, "subclass resposibility"
   end
 
-  def save(hash)
-    hash.keys.each do |key|
+  def save(hash, keys = nil)
+    (keys || hash.keys).each do |key|
       self[key] = hash[key]
     end
   end

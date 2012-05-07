@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency "typed", ">= 0.2.1"
+  s.add_dependency "typed", ">= 0.2.2"
   s.add_dependency "must", ">= 0.2.7"
   s.add_dependency "dsl_accessor", ">= 0.4.0"
 

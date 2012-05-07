@@ -97,3 +97,12 @@ class CompositeInvoker < Ccp::Invokers::Base
     super
   end
 end
+
+class TSFC                  # TestSaveFixtureCmd
+  include Ccp::Commands::Core
+
+  def execute
+    data[:a]                # read
+    data[:x] = 10           # write
+  end
+end
