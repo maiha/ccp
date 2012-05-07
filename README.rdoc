@@ -138,8 +138,11 @@ some fixture data for the 'data' object.
 Ccp can automatically generate fixture data for each commands.
 Pass :save_fixture option to 'execute' class method to enable it.
 
-  * save_fixture     : enable write fixture mode if true
-  * save_fixture_dir : set root dir of fixture (default: tmp/fixtures)
+  * fixture_save : set true if you want this feature
+  * fixture_dir  : set root dir of fixture (default: tmp/fixtures)
+  * fixture_kvs  : file structure: :file|:dir (default: :file)
+  * fixture_ext  : file format: :json|:yaml (default: :json)
+  * fixture_keys : save data only keys written in here
 
 In above example, we can kick it with data[:a] like this.
 
@@ -147,22 +150,21 @@ In above example, we can kick it with data[:a] like this.
 
 And if you want to geneate fixures for this command, just add :save_fixture.
 
-    TSFC.execute(:a => 1, :save_fixture => true)
+    TSFC.execute(:a => 1, :fixture_save => true)
 
 This will create following files.
 
   % tree tmp/fixtures
   tmp/fixtures
-  └── tsfc
-      ├── in.yaml
-      └── out.yaml
-  
+  +- tsfc
+      +- read.json
+      +- write.json
+
   1 directory, 2 files    
-  % cat tmp/fixtures/tsfc/*
-  --- 
-  :a: 1
-  --- 
-  :x: 10
+  % cat tmp/fixtures/tsfc/read.json
+  {"a":1}
+  % cat tmp/fixtures/tsfc/write.json
+  {"x":10}
 
 === Writing tests
 
@@ -170,8 +172,8 @@ Use them as stubs and expected data as you like.
 
   describe TSFC do
     it "should work" do
-      data     = YAML.load(Pathname("tmp/fixtures/tsfc/in.yaml").read{})
-      expected = YAML.load(Pathname("tmp/fixtures/tsfc/out.yaml").read{})
+      data     = JSON.load(Pathname("tmp/fixtures/tsfc/read.json").read{})
+      expected = JSON.load(Pathname("tmp/fixtures/tsfc/write.json").read{})
 
       cmd = TSFC.execute(data)
 
@@ -182,4 +184,62 @@ Use them as stubs and expected data as you like.
   end
 
 This code is highly versatile.
+
+=== Filter commands
+
+  * fixture_save : specify command names (negations can be used as "!")
+
+For example, imagine composite commands like this.
+
+  Program
+    +- Cmd1
+    +- Cmd2
+    +- Cmd3
+
+In this case, 
+
+    Program.execute(:fixture_save => true)
+
+generates following files.
+
+  * tmp/fixtures/cmd1/*.json
+  * tmp/fixtures/cmd2/*.json
+  * tmp/fixtures/cmd3/*.json
+  * tmp/fixtures/program/*.json
+
+If you want fixture data only for cmd2, run this.
+
+    Program.execute(:fixture_save => ["Cmd2"])
+
+"!" is used for special syntax which means 'negations'.
+
+    Program.execute(:fixture_save => ["!Program"])
+
+will generates fixtures for cmd1,cmd2,cmd3 (in short "not program").
+
+=== Filter data
+
+  * fixture_keys : specify data key names (negations can be used as "!")
+
+For example, imagine a command like this.
+
+    class Cmd
+      def execute
+        data[:x] = 10
+        data[:logger].debug "x is set"
+      end
+    end
+
+This code will generate fixtures about 'x' and 'logger' cause it read those vars.
+In many case, we don't need 'logger' object for test data, and furthermore,
+the logger object would be failed in Json serialization.
+
+In this case, we want to filter save data. Try fixtures_keys!
+
+    Cmd.execute(:fixture_save => true, :fixture_keys => ['x'])
+
+This will generate "read.json" that contains only 'x'.
+And, "!" can be used for negations as same as "Filter commands".
+
+    Cmd.execute(:fixture_save => true, :fixture_keys => ['!logger'])
 
