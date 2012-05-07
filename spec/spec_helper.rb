@@ -12,3 +12,11 @@ def breadcrumbs_receiver
   return r
 end
 
+def load_fixture(path)
+  path = Pathname(path)
+  case path.extname
+  when ".json"; JSON.load(Pathname(path).read{})
+  when ".yaml"; YAML.load(Pathname(path).read{})
+  else; raise "load doesn't support #{path.extname}"
+  end
+end
