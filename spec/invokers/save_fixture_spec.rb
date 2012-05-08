@@ -2,14 +2,6 @@ require "spec_helper"
 require 'fileutils'
 
 describe Ccp::Invokers::Base do
-  def load(path)
-    case path.extname
-    when ".json"; JSON.load(Pathname(path).read{})
-    when ".yaml"; YAML.load(Pathname(path).read{})
-    else; raise "load doesn't support #{path.extname}"
-    end
-  end
-
   describe ".execute" do
     before do
       FileUtils.rm_rf("tmp")
@@ -24,7 +16,7 @@ describe Ccp::Invokers::Base do
         CompositeInvoker.execute(data.merge(opts))
 
         (read = path + "composite_invoker/read.json" ).should exist
-        load(read)["breadcrumbs"].should == 
+        load_fixture(read)["breadcrumbs"].should == 
           ["CompositeInvoker#before",
            "Cmd1#before", "Cmd1#execute", "Cmd1#after",
            "Cmd23#before",
