@@ -2,7 +2,7 @@ require "spec_helper"
 require 'fileutils'
 
 describe Ccp::Invokers::Base do
-  describe "(class methods)" do
+  describe "(class)" do
     subject {Class.new(Ccp::Invokers::Base)}
     it { should respond_to(:fixture_save) }
     it { should respond_to(:fixture_keys) }

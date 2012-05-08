@@ -18,14 +18,19 @@ module Ccp
       end
 
       def execute(cmd)
-        return super unless fixture_save?(cmd)
-
-        observer = Ccp::Fixtures::Observer.new(data)
-        observer.start
-        super
-        observer.stop
-
-        fixture_save(cmd, observer.read, observer.write)
+        if fixture_save?(cmd)
+          fixture_stub(cmd)
+          observer = Ccp::Fixtures::Observer.new(data)
+          observer.start
+          super
+          observer.stop
+          fixture_mock(cmd)
+          fixture_save(cmd, observer.read, observer.write)
+        else
+          fixture_stub(cmd)
+          super
+          fixture_mock(cmd)
+        end
       end
 
       def setup
@@ -50,6 +55,30 @@ module Ccp
           self[key] = options.delete(key) if options.has_key?(key)
         end
         super
+      end
+
+      def fixture_stub(cmd)
+        path = cmd.class.stub or return
+        hash = Ccp::Persistent.load(path).read!
+        data.merge!(hash)
+      end
+
+      def fixture_mock(cmd)
+        path = cmd.class.mock or return
+        hash = Ccp::Persistent.load(path).read!
+
+        hash.keys.each do |key|
+          fixture_validate(cmd, key, data, hash)
+        end
+      end
+
+      def fixture_validate(cmd, key, data, hash)
+        raise "#{cmd.class} should write #{key} but not found" unless data.exist?(key)
+        return if data[key] == hash[key]
+
+        got      = "%s(%s)" % [data[key].inspect.truncate(200), Must::StructInfo.new(data[key]).compact.inspect]
+        expected = "%s(%s)" % [hash[key].inspect.truncate(200), Must::StructInfo.new(hash[key]).compact.inspect]
+        raise "%s should create %s for %s, but got %s" % [cmd.class, expected, key, got]
       end
 
       def fixture_save?(cmd)

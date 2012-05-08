@@ -4,6 +4,7 @@ module Ccp
     autoload :Composite      , 'ccp/commands/composite'
     autoload :Executable     , 'ccp/commands/executable'
     autoload :Receivable     , 'ccp/commands/receivable'
+    autoload :Fixturable     , 'ccp/commands/fixturable'
     autoload :RuntimeArgs    , 'ccp/commands/runtime_args'
     autoload :Commentable    , 'ccp/commands/commentable'
     autoload :Core           , 'ccp/commands/core'
