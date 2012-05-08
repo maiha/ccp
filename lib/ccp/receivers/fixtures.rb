@@ -68,11 +68,11 @@ module Ccp
         end
       end
 
-      def fixture_save(cmd, read, write)
+      def fixture_save(cmd, stub, mock)
         path      = self[:fixture_path_for].call(cmd)
         versioned = Ccp::Persistent::Versioned.new(path, :kvs=>self[:fixture_kvs], :ext=>self[:fixture_ext])
-        versioned["read" ].save(read , fixture_keys_filter(read.keys))
-        versioned["write"].save(write, fixture_keys_filter(write.keys))
+        versioned["stub"].save(stub, fixture_keys_filter(stub.keys))
+        versioned["mock"].save(mock, fixture_keys_filter(mock.keys))
       end
 
       def fixture_keys_filter(keys)

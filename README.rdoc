@@ -157,14 +157,16 @@ This will create following files.
   % tree tmp/fixtures
   tmp/fixtures
   +- tsfc
-      +- read.json
-      +- write.json
+      +- stub.json
+      +- mock.json
 
   1 directory, 2 files    
-  % cat tmp/fixtures/tsfc/read.json
+  % cat tmp/fixtures/tsfc/stub.json
   {"a":1}
-  % cat tmp/fixtures/tsfc/write.json
+  % cat tmp/fixtures/tsfc/mock.json
   {"x":10}
+
+Where, reading means stub and writing means mock.
 
 === Writing tests
 
@@ -172,8 +174,8 @@ Use them as stubs and expected data as you like.
 
   describe TSFC do
     it "should work" do
-      data     = JSON.load(Pathname("tmp/fixtures/tsfc/read.json").read{})
-      expected = JSON.load(Pathname("tmp/fixtures/tsfc/write.json").read{})
+      data     = JSON.load(Pathname("tmp/fixtures/tsfc/stub.json").read{})
+      expected = JSON.load(Pathname("tmp/fixtures/tsfc/mock.json").read{})
 
       cmd = TSFC.execute(data)
 
@@ -238,7 +240,7 @@ In this case, we want to filter save data. Try fixtures_keys!
 
     Cmd.execute(:fixture_save => true, :fixture_keys => ['x'])
 
-This will generate "read.json" that contains only 'x'.
+This will generate "stub.json" that contains only 'x'.
 And, "!" can be used for negations as same as "Filter commands".
 
     Cmd.execute(:fixture_save => true, :fixture_keys => ['!logger'])

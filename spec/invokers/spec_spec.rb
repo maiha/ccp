@@ -17,7 +17,7 @@ describe Ccp::Invokers::Spec do
 
   it "should stub data" do
     path = truncate_pathname("tmp/fixtures/spec/invokers/spec/stub")
-    save_fixture(path + "read.json", "breadcrumbs"=>[])
+    save_fixture(path + "stub.json", "breadcrumbs"=>[])
 
     lambda {
       Cmd1Spec.execute
