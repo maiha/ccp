@@ -11,39 +11,13 @@ describe Ccp::Persistent::Base do
     end
   end
 
-  it "should provide ext" do
-    subject.methods.include?("ext").should == true
-  end
-
-  it "should provide exist?" do
-    subject.methods.include?("exist?").should == true
-  end
-
-  it "should provide #save" do
-    subject.methods.include?("save").should == true
-  end
-
-  it "should provide #load!" do
-    subject.methods.include?("load!").should == true
-  end
-
-  it "should provide #load" do
-    subject.methods.include?("load").should == true
-  end
-
-  it "should provide #[]" do
-    subject.methods.include?("[]").should == true
-  end
-
-  it "should provide #[]=" do
-    subject.methods.include?("[]=").should == true
-  end
-
-  it "should provide #keys" do
-    subject.methods.include?("keys").should == true
-  end
-
-  it "should provide #truncate" do
-    subject.methods.include?("truncate").should == true
-  end
+  it { should respond_to("ext") }
+  it { should respond_to("exist?") }
+  it { should respond_to("save") }
+  it { should respond_to("load!") }
+  it { should respond_to("load") }
+  it { should respond_to("[]") }
+  it { should respond_to("[]=") }
+  it { should respond_to("keys") }
+  it { should respond_to("truncate") }
 end

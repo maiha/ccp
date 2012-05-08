@@ -6,10 +6,10 @@ describe Ccp::Invokers::Spec do
     subject.should be_kind_of(Ccp::Invokers::Base)
   end
 
-  it "should provide .spec" do
-    Ccp::Invokers::Spec.methods.include?("spec").should == true
+  describe "(class)" do
+    subject { Ccp::Invokers::Spec }
+    it { should respond_to("spec") }
   end
-
 end
 
 

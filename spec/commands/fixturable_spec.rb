@@ -3,13 +3,8 @@ require "spec_helper"
 describe Ccp::Commands::Fixturable do
   subject { Class.new{include Ccp::Commands::Fixturable} } 
 
-  it "should provide .stub" do
-    subject.methods.map(&:to_s).should include("stub")
-  end
-
-  it "should provide .mock" do
-    subject.methods.map(&:to_s).should include("mock")
-  end
+  it { should respond_to("stub") }
+  it { should respond_to("mock") }
 end
 
 __END__
