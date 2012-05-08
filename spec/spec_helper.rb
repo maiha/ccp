@@ -12,11 +12,24 @@ def breadcrumbs_receiver
   return r
 end
 
+def lookup_serializer(extname)
+  {".json"=>JSON, ".yaml"=>YAML}[extname] or raise "no serializers for #{extname}"
+end
+
 def load_fixture(path)
   path = Pathname(path)
-  case path.extname
-  when ".json"; JSON.load(Pathname(path).read{})
-  when ".yaml"; YAML.load(Pathname(path).read{})
-  else; raise "load doesn't support #{path.extname}"
-  end
+  lookup_serializer(path.extname).load(path.read{})
+end
+
+def save_fixture(path, obj)
+  path = Pathname(path)
+  buf  = lookup_serializer(path.extname).dump(obj)
+  path.open("w+"){|f| f.print buf}
+end
+
+def truncate_pathname(dir)
+  path = Pathname(dir)
+  FileUtils.rm_rf(path.to_s)
+  path.mkpath
+  return path
 end

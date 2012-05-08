@@ -13,7 +13,7 @@ describe Cmd1 do
     end
 
     def created_keys
-      load_fixture(FIXTURE_PATH + "read.json").keys.sort
+      load_fixture(FIXTURE_PATH + "stub.json").keys.sort
     rescue Errno::ENOENT
       []
     end
