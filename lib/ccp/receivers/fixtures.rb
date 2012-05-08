@@ -58,14 +58,27 @@ module Ccp
       end
 
       def fixture_stub(cmd)
-        return unless cmd.class.stub
-
-#        kvs = Ccp::Persistent.load(path)
-        
+        path = cmd.class.stub or return
+        hash = Ccp::Persistent.load(path).read!
+        data.merge!(hash)
       end
 
       def fixture_mock(cmd)
-        return unless cmd.class.mock
+        path = cmd.class.mock or return
+        hash = Ccp::Persistent.load(path).read!
+
+        hash.keys.each do |key|
+          fixture_validate(cmd, key, data, hash)
+        end
+      end
+
+      def fixture_validate(cmd, key, data, hash)
+        raise "#{cmd.class} should write #{key} but not found" unless data.exist?(key)
+        return if data[key] == hash[key]
+
+        got      = "%s(%s)" % [data[key].inspect.truncate(200), Must::StructInfo.new(data[key]).compact.inspect]
+        expected = "%s(%s)" % [hash[key].inspect.truncate(200), Must::StructInfo.new(hash[key]).compact.inspect]
+        raise "%s should create %s for %s, but got %s" % [cmd.class, expected, key, got]
       end
 
       def fixture_save?(cmd)
