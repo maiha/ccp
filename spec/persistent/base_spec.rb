@@ -19,6 +19,7 @@ describe Ccp::Persistent::Base do
   it { should respond_to("[]") }
   it { should respond_to("[]=") }
   it { should respond_to("read") }
+  it { should respond_to("read!") }
   it { should respond_to("keys") }
   it { should respond_to("truncate") }
 end

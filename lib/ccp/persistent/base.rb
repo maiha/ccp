@@ -42,6 +42,12 @@ class Ccp::Persistent::Base
   end
 
   def read
+    read!
+  rescue Ccp::Persistent::NotFound
+    {}
+  end
+
+  def read!
     keys.inject({}) {|h,k| h[k] = v; h}
   end
 

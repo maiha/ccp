@@ -48,7 +48,14 @@ class Ccp::Persistent::File < Ccp::Persistent::Base
   end
 
   def read
-    path.exist? ? decode(path.read{}).must(Hash) : {}
+    read!
+  rescue Ccp::Persistent::NotFound
+    {}
+  end
+
+  def read!
+    path.exist? or raise Ccp::Persistent::NotFound, path.to_s
+    decode(path.read{}).must(Hash)
   end
 
   private
