@@ -41,6 +41,10 @@ class Ccp::Persistent::Base
     raise NotImplementedError, "subclass resposibility"
   end
 
+  def read
+    keys.inject({}) {|h,k| h[k] = v; h}
+  end
+
   def keys
     raise NotImplementedError, "subclass resposibility"
   end
