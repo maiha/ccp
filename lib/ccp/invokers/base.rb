@@ -4,7 +4,7 @@ module Ccp
   module Invokers
     class Base
       include Commands::Composite
-      include Options
+      include Utils::Options
 
       dsl_accessor :receiver, Receivers::Base
 

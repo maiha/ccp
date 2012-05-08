@@ -1,5 +1,5 @@
 module Ccp
-  module Invokers
+  module Utils
     module Options
       def self.included(base)
         super
