@@ -6,6 +6,7 @@ module Ccp
         base.class_eval do
           extend ClassMethods
           extend Executable::ClassMethods
+          include Fixturable
         end
       end
 

@@ -7,6 +7,9 @@ module Ccp::Persistent
   autoload :Json     , 'ccp/persistent/json'
   autoload :Tsv      , 'ccp/persistent/tsv'
   autoload :Versioned, 'ccp/persistent/versioned'
+  autoload :Loadable , 'ccp/persistent/loadable'
+
+  extend Ccp::Persistent::Loadable
 
   def self.lookup(name)
     case name.to_s

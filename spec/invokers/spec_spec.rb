@@ -10,6 +10,11 @@ describe Ccp::Invokers::Spec do
     Ccp::Invokers::Spec.methods.include?("spec").should == true
   end
 
+end
+
+
+__END__
+
   class Cmd1Spec < Ccp::Invokers::Spec
     fixture_dir "spec/fixtures/invokers/spec/stub"
     command Cmd1

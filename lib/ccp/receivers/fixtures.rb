@@ -18,14 +18,19 @@ module Ccp
       end
 
       def execute(cmd)
-        return super unless fixture_save?(cmd)
-
-        observer = Ccp::Fixtures::Observer.new(data)
-        observer.start
-        super
-        observer.stop
-
-        fixture_save(cmd, observer.read, observer.write)
+        if fixture_save?(cmd)
+          fixture_stub(cmd)
+          observer = Ccp::Fixtures::Observer.new(data)
+          observer.start
+          super
+          observer.stop
+          fixture_mock(cmd)
+          fixture_save(cmd, observer.read, observer.write)
+        else
+          fixture_stub(cmd)
+          super
+          fixture_mock(cmd)
+        end
       end
 
       def setup
@@ -50,6 +55,17 @@ module Ccp
           self[key] = options.delete(key) if options.has_key?(key)
         end
         super
+      end
+
+      def fixture_stub(cmd)
+        return unless cmd.class.stub
+
+#        kvs = Ccp::Persistent.load(path)
+        
+      end
+
+      def fixture_mock(cmd)
+        return unless cmd.class.mock
       end
 
       def fixture_save?(cmd)
