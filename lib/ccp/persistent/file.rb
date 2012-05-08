@@ -11,13 +11,13 @@ class Ccp::Persistent::File < Ccp::Persistent::Base
   end
 
   def exist?(key)
-    read_data.has_key?(key.to_s)
+    read.has_key?(key.to_s)
   end
 
   def load!(key)
-    hash = read_data
+    hash = read
     if hash.has_key?(key.to_s)
-      read_data[key.to_s]
+      hash[key.to_s]
     else
       raise Ccp::Persistent::NotFound, key.to_s
     end
@@ -30,13 +30,13 @@ class Ccp::Persistent::File < Ccp::Persistent::Base
   end
 
   def []=(key, val)
-    hash = read_data
+    hash = read
     hash[key.to_s] = val
     raw_write(encode(hash))
   end
 
   def keys
-    read_data.keys.sort
+    read.keys.sort
   end
 
   def truncate
@@ -47,11 +47,18 @@ class Ccp::Persistent::File < Ccp::Persistent::Base
     @path ||= Pathname(@source)
   end
 
-  private
-    def read_data
-      path.exist? ? decode(path.read{}).must(Hash) : {}
-    end
+  def read
+    read!
+  rescue Ccp::Persistent::NotFound
+    {}
+  end
 
+  def read!
+    path.exist? or raise Ccp::Persistent::NotFound, path.to_s
+    decode(path.read{}).must(Hash)
+  end
+
+  private
     def raw_write(buf)
       path.parent.mkpath
       path.open("w+"){|f| f.print buf}

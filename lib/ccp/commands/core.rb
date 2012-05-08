@@ -6,8 +6,10 @@ module Ccp
       include Executable
 
       def self.included(base)
+        super
         base.class_eval do
           extend ClassMethods
+          include Fixturable
         end
       end
 
