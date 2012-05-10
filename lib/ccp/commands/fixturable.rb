@@ -4,6 +4,7 @@ module Ccp
       def self.included(base)
         base.dsl_accessor :stub
         base.dsl_accessor :mock
+        base.dsl_accessor :fail
       end
     end
   end
