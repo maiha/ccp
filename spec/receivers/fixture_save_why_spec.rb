@@ -88,5 +88,27 @@ describe Ccp::Commands::Composite do
     execute(:fixture_save => ['Cmd1','!Cmd1']) do
       ['cmd1']
     end
+
+    ######################################################################
+    ### hard coded
+    context "(hard coded)" do
+      before { Cmd2.save true }
+      after  { Cmd2.save false }
+
+      # will save if hard coded is enabled
+      execute do
+        ['cmd2']
+      end
+
+      # respect hard coded even if runtime args are given
+      execute(:fixture_save => ['Cmd1']) do
+        ['cmd1', 'cmd2']
+      end
+
+      # respect it even if it is rejected by runtime args
+      execute(:fixture_save => ['!Cmd1', '!Cmd2']) do
+        ["cmd2", "cmd3", "program"]
+      end
+    end
   end
 end

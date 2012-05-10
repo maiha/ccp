@@ -1,30 +1,12 @@
 module Ccp
   module Receivers
     module Fixtures
-      class Storage
-        def initialize(kvs)
-          @kvs = kvs
-        end
-
-        def save(data)
-          data.keys.each do |key|
-            @kvs[key.to_s] = data[key]
-          end
-        end
-
-        def load
-          raise NotImplementedError
-        end
-      end
-
       def execute(cmd)
         if fixture_save?(cmd)
-          fixture_stub(cmd)
           observer = Ccp::Fixtures::Observer.new(data)
           observer.start
           super
           observer.stop
-          fixture_mock(cmd)
           fixture_save(cmd, observer.read, observer.write)
         else
           fixture_stub(cmd)
@@ -73,15 +55,33 @@ module Ccp
       end
 
       def fixture_validate(cmd, key, data, hash)
-        raise "#{cmd.class} should write #{key} but not found" unless data.exist?(key)
-        return if data[key] == hash[key]
+        data.exist?(key)       or fixture_fail(cmd, key)
+        data[key] == hash[key] or fixture_fail(cmd, key, hash[key], data[key])
+        # or, success
+      end
 
-        got      = "%s(%s)" % [data[key].inspect.truncate(200), Must::StructInfo.new(data[key]).compact.inspect]
-        expected = "%s(%s)" % [hash[key].inspect.truncate(200), Must::StructInfo.new(hash[key]).compact.inspect]
-        raise "%s should create %s for %s, but got %s" % [cmd.class, expected, key, got]
+      def fixture_fail(cmd, key, expected = nil, got = nil)
+        block = fixture_fail_for(cmd)
+        instance_exec(cmd, key, expected, got, &block)
+      end
+
+      def fixture_fail_for(cmd)
+        cmd.class.fail || method(:default_fixture_fail)
+      end
+
+      def default_fixture_fail(cmd, key, exp, got)
+        if exp == nil and got == nil
+          raise "#{cmd.class} should write #{key} but not found"
+        end
+
+        exp_info = "%s(%s)" % [exp.inspect.truncate(200), Must::StructInfo.new(exp).compact.inspect]
+        got_info = "%s(%s)" % [got.inspect.truncate(200), Must::StructInfo.new(got).compact.inspect]
+        raise "%s should create %s for %s, but got %s" % [cmd.class, exp_info, key, got_info]
       end
 
       def fixture_save?(cmd)
+        return true if cmd.class.save # highest priority
+
         case (obj = self[:fixture_save])
         when true  ; true
         when false ; false
@@ -98,18 +98,30 @@ module Ccp
       end
 
       def fixture_save(cmd, stub, mock)
-        path      = self[:fixture_path_for].call(cmd)
-        versioned = Ccp::Persistent::Versioned.new(path, :kvs=>self[:fixture_kvs], :ext=>self[:fixture_ext])
-        versioned["stub"].save(stub, fixture_keys_filter(stub.keys))
-        versioned["mock"].save(mock, fixture_keys_filter(mock.keys))
+        path = self[:fixture_path_for].call(cmd)
+        path = Pathname(cmd.class.dir) + cmd.class.name.underscore if cmd.class.dir
+
+        keys = cmd.class.keys || self[:fixture_keys]
+        kvs  = cmd.class.kvs  || self[:fixture_kvs]
+        ext  = cmd.class.ext  || self[:fixture_ext]
+
+        versioned = Ccp::Persistent::Versioned.new(path, :kvs=>kvs, :ext=>ext)
+
+        # stub
+        storage = cmd.class.stub ? Ccp::Persistent.lookup(kvs).new(cmd.class.stub, ext) : versioned["stub"]
+        storage.save(stub, fixture_keys_filter(keys, stub.keys))
+
+        # mock
+        storage = cmd.class.mock ? Ccp::Persistent.lookup(kvs).new(cmd.class.mock, ext) : versioned["mock"]
+        storage.save(mock, fixture_keys_filter(keys, mock.keys))
       end
 
-      def fixture_keys_filter(keys)
-        case (obj = self[:fixture_keys])
+      def fixture_keys_filter(acl, keys)
+        case acl
         when true ; keys
         when false; []
         when Array
-          ary = obj.map(&:to_s)
+          ary = acl.map(&:to_s)
           return keys if ary == []
           if ary.size == ary.grep(/^!/).size
             return keys.dup.reject{|v| ary.include?("!#{v}")}
@@ -117,15 +129,8 @@ module Ccp
             ary & keys
           end
         else
-          raise ":fixture_keys is invalid: #{obj.class}"
+          raise ":fixture_keys is invalid: #{acl.class}"
         end
-      end
-
-      def fixture_for(cmd, key)
-        kvs  = Ccp::Persistent.lookup(self[:fixture_kvs])
-        code = Ccp::Serializers.lookup(self[:fixture_ext])
-        path = instance_exec(cmd, &self[:fixture_path_for]) + "#{key}.#{code.ext}.#{kvs.ext}"
-        return Storage.new(kvs.new(path, code))
       end
 
       def default_fixture_path_for

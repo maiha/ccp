@@ -1,5 +1,7 @@
+require "spec_helper"
+
 describe Ccp::Receivers::Fixtures do
-  context "(with stub)" do
+  context "(stub)" do
     class Cmd1Stub < Cmd1
       stub "spec/fixtures/stub/breadcrumbs.json"
     end
@@ -15,29 +17,48 @@ describe Ccp::Receivers::Fixtures do
     end
   end
 
-  context "(with valid mock)" do
-    class Cmd1Mock < Cmd1
+  context "(stub and mock)" do
+    class Cmd1StubMock < Cmd1
       stub "spec/fixtures/stub/breadcrumbs.json"
-      mock "spec/fixtures/cmd1/mock.json"
+      mock "spec/fixtures/cmd1stub_mock/mock.json"
     end
 
     it "should raise when current data doesn't match the given data" do
       lambda {
-        Cmd1Mock.execute
+        Cmd1StubMock.execute
       }.should_not raise_error
     end
   end
 
-  context "(with invalid mock)" do
-    class Cmd1MockInvalid < Cmd1
+  context "(stub and invalid mock)" do
+    class Cmd1StubInvalidMock < Cmd1
       stub "spec/fixtures/stub/breadcrumbs.json"
       mock "spec/fixtures/stub/breadcrumbs.json"
     end
 
     it "should raise when current data doesn't match the given data" do
       lambda {
-        Cmd1MockInvalid.execute
+        Cmd1StubInvalidMock.execute
       }.should raise_error(/should create/)
+    end
+  end
+
+  context "(stub and mock and fail)" do
+    class Cmd1StubInvalidMockWithFail < Cmd1
+      dsl_accessor :failed, false
+
+      stub "spec/fixtures/stub/breadcrumbs.json"
+      mock "spec/fixtures/stub/breadcrumbs.json"
+
+      fail do |cmd, key, expected, got|
+        Cmd1StubInvalidMockWithFail.failed true
+      end
+    end
+
+    it "should raise when current data doesn't match the given data" do
+      Cmd1StubInvalidMockWithFail.failed.should == false
+      Cmd1StubInvalidMockWithFail.execute
+      Cmd1StubInvalidMockWithFail.failed.should == true
     end
   end
 end
