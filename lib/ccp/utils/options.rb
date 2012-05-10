@@ -22,6 +22,7 @@ module Ccp
 
           @keys.each do |key|
             @base.dsl_accessor key
+            instance_eval "def self.#{key}; :#{key}; end"
           end
         end
 

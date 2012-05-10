@@ -2,9 +2,10 @@ module Ccp
   module Commands
     module Fixturable
       def self.included(base)
-        base.dsl_accessor :stub
-        base.dsl_accessor :mock
-        base.dsl_accessor :fail
+        base.class_eval do
+          include Ccp::Utils::Options
+          dsl_accessor :fixture, options(:stub, :mock, :fail)
+        end
       end
     end
   end
