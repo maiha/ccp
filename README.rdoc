@@ -245,3 +245,23 @@ And, "!" can be used for negations as same as "Filter commands".
 
     Cmd.execute(:fixture_save => true, :fixture_keys => ['!logger'])
 
+=== Static options
+
+Static options(hard code) are also available.
+
+    class Cmd
+      include Ccp::Commands::Core
+      stub "tmp/stub.json"
+      mock "tmp/mock.json"
+      # keys ["x"]
+      save true
+
+      def execute
+        data[:a]
+        data[:x] = 10
+      end
+    end
+
+    Cmd.execute(:a=>1)
+
+This generates "tmp/stub.json", "tmp/mock.json".
