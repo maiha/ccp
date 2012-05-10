@@ -82,6 +82,8 @@ module Ccp
       end
 
       def fixture_save?(cmd)
+        return true if cmd.class.save # highest priority
+
         case (obj = self[:fixture_save])
         when true  ; true
         when false ; false

@@ -12,11 +12,9 @@ describe Ccp::Commands::Fixturable do
     it { should respond_to("stub") }
     it { should respond_to("mock") }
     it { should respond_to("fail") }
+    it { should respond_to("save") }
     it { should respond_to("fixture") }
     its(:fixture) { should respond_to("options") }
-    its(:fixture) { should respond_to("stub") }
-    its(:fixture) { should respond_to("mock") }
-    its(:fixture) { should respond_to("fail") }
   end
 
   context "Ccp::Commands::Composite" do
@@ -24,11 +22,9 @@ describe Ccp::Commands::Fixturable do
     it { should respond_to("stub") }
     it { should respond_to("mock") }
     it { should respond_to("fail") }
+    it { should respond_to("save") }
     it { should respond_to("fixture") }
     its(:fixture) { should respond_to("options") }
-    its(:fixture) { should respond_to("stub") }
-    its(:fixture) { should respond_to("mock") }
-    its(:fixture) { should respond_to("fail") }
   end
 
   context "Ccp::Invokers::Base" do
@@ -36,11 +32,9 @@ describe Ccp::Commands::Fixturable do
     it { should respond_to("stub") }
     it { should respond_to("mock") }
     it { should respond_to("fail") }
+    it { should respond_to("save") }
     it { should respond_to("fixture") }
     its(:fixture) { should respond_to("options") }
-    its(:fixture) { should respond_to("stub") }
-    its(:fixture) { should respond_to("mock") }
-    its(:fixture) { should respond_to("fail") }
   end
 
   context "included class" do
@@ -48,11 +42,9 @@ describe Ccp::Commands::Fixturable do
     it { should respond_to("stub") }
     it { should respond_to("mock") }
     it { should respond_to("fail") }
+    it { should respond_to("save") }
     it { should respond_to("fixture") }
     its(:fixture) { should respond_to("options") }
-    its(:fixture) { should respond_to("stub") }
-    its(:fixture) { should respond_to("mock") }
-    its(:fixture) { should respond_to("fail") }
   end
 end
 
