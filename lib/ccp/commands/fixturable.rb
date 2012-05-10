@@ -4,7 +4,7 @@ module Ccp
       def self.included(base)
         base.class_eval do
           include Ccp::Utils::Options
-          dsl_accessor :fixture, options(:stub, :mock, :fail, :save)
+          dsl_accessor :fixture, options(:stub, :mock, :fail, :save, :keys, :dir, :kvs, :ext)
         end
       end
     end

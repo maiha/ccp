@@ -13,6 +13,10 @@ describe Ccp::Commands::Fixturable do
     it { should respond_to("mock") }
     it { should respond_to("fail") }
     it { should respond_to("save") }
+    it { should respond_to("keys") }
+    it { should respond_to("dir") }
+    it { should respond_to("kvs") }
+    it { should respond_to("ext") }
     it { should respond_to("fixture") }
     its(:fixture) { should respond_to("options") }
   end
@@ -23,6 +27,10 @@ describe Ccp::Commands::Fixturable do
     it { should respond_to("mock") }
     it { should respond_to("fail") }
     it { should respond_to("save") }
+    it { should respond_to("keys") }
+    it { should respond_to("dir") }
+    it { should respond_to("kvs") }
+    it { should respond_to("ext") }
     it { should respond_to("fixture") }
     its(:fixture) { should respond_to("options") }
   end
@@ -33,6 +41,10 @@ describe Ccp::Commands::Fixturable do
     it { should respond_to("mock") }
     it { should respond_to("fail") }
     it { should respond_to("save") }
+    it { should respond_to("keys") }
+    it { should respond_to("dir") }
+    it { should respond_to("kvs") }
+    it { should respond_to("ext") }
     it { should respond_to("fixture") }
     its(:fixture) { should respond_to("options") }
   end
@@ -43,6 +55,10 @@ describe Ccp::Commands::Fixturable do
     it { should respond_to("mock") }
     it { should respond_to("fail") }
     it { should respond_to("save") }
+    it { should respond_to("keys") }
+    it { should respond_to("dir") }
+    it { should respond_to("kvs") }
+    it { should respond_to("ext") }
     it { should respond_to("fixture") }
     its(:fixture) { should respond_to("options") }
   end

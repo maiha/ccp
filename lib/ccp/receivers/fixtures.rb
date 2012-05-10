@@ -3,12 +3,10 @@ module Ccp
     module Fixtures
       def execute(cmd)
         if fixture_save?(cmd)
-          fixture_stub(cmd)
           observer = Ccp::Fixtures::Observer.new(data)
           observer.start
           super
           observer.stop
-          fixture_mock(cmd)
           fixture_save(cmd, observer.read, observer.write)
         else
           fixture_stub(cmd)
@@ -100,18 +98,30 @@ module Ccp
       end
 
       def fixture_save(cmd, stub, mock)
-        path      = self[:fixture_path_for].call(cmd)
-        versioned = Ccp::Persistent::Versioned.new(path, :kvs=>self[:fixture_kvs], :ext=>self[:fixture_ext])
-        versioned["stub"].save(stub, fixture_keys_filter(stub.keys))
-        versioned["mock"].save(mock, fixture_keys_filter(mock.keys))
+        path = self[:fixture_path_for].call(cmd)
+        path = Pathname(cmd.class.dir) + cmd.class.name.underscore if cmd.class.dir
+
+        keys = cmd.class.keys || self[:fixture_keys]
+        kvs  = cmd.class.kvs  || self[:fixture_kvs]
+        ext  = cmd.class.ext  || self[:fixture_ext]
+
+        versioned = Ccp::Persistent::Versioned.new(path, :kvs=>kvs, :ext=>ext)
+
+        # stub
+        storage = cmd.class.stub ? Ccp::Persistent.lookup(kvs).new(cmd.class.stub, ext) : versioned["stub"]
+        storage.save(stub, fixture_keys_filter(keys, stub.keys))
+
+        # mock
+        storage = cmd.class.mock ? Ccp::Persistent.lookup(kvs).new(cmd.class.mock, ext) : versioned["mock"]
+        storage.save(mock, fixture_keys_filter(keys, mock.keys))
       end
 
-      def fixture_keys_filter(keys)
-        case (obj = self[:fixture_keys])
+      def fixture_keys_filter(acl, keys)
+        case acl
         when true ; keys
         when false; []
         when Array
-          ary = obj.map(&:to_s)
+          ary = acl.map(&:to_s)
           return keys if ary == []
           if ary.size == ary.grep(/^!/).size
             return keys.dup.reject{|v| ary.include?("!#{v}")}
@@ -119,7 +129,7 @@ module Ccp
             ary & keys
           end
         else
-          raise ":fixture_keys is invalid: #{obj.class}"
+          raise ":fixture_keys is invalid: #{acl.class}"
         end
       end
 
