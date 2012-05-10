@@ -1,22 +1,6 @@
 module Ccp
   module Receivers
     module Fixtures
-      class Storage
-        def initialize(kvs)
-          @kvs = kvs
-        end
-
-        def save(data)
-          data.keys.each do |key|
-            @kvs[key.to_s] = data[key]
-          end
-        end
-
-        def load
-          raise NotImplementedError
-        end
-      end
-
       def execute(cmd)
         if fixture_save?(cmd)
           fixture_stub(cmd)
@@ -119,13 +103,6 @@ module Ccp
         else
           raise ":fixture_keys is invalid: #{obj.class}"
         end
-      end
-
-      def fixture_for(cmd, key)
-        kvs  = Ccp::Persistent.lookup(self[:fixture_kvs])
-        code = Ccp::Serializers.lookup(self[:fixture_ext])
-        path = instance_exec(cmd, &self[:fixture_path_for]) + "#{key}.#{code.ext}.#{kvs.ext}"
-        return Storage.new(kvs.new(path, code))
       end
 
       def default_fixture_path_for
