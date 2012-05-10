@@ -1,6 +1,29 @@
 require "spec_helper"
 
 describe Ccp::Receivers::Fixtures do
+  context "Ccp::Commands::Core" do
+    subject { Cmd1 }
+    it { should respond_to("stub") }
+    it { should respond_to("mock") }
+    it { should respond_to("fail") }
+  end
+
+  context "Ccp::Commands::Composite" do
+    subject { Program }
+    it { should respond_to("stub") }
+    it { should respond_to("mock") }
+    it { should respond_to("fail") }
+  end
+
+  context "Ccp::Invokers::Base" do
+    subject { CompositeInvoker }
+    it { should respond_to("stub") }
+    it { should respond_to("mock") }
+    it { should respond_to("fail") }
+  end
+end
+
+describe Ccp::Receivers::Fixtures do
   context "(stub)" do
     class Cmd1Stub < Cmd1
       stub "spec/fixtures/stub/breadcrumbs.json"
