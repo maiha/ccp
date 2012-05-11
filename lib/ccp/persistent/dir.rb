@@ -29,7 +29,7 @@ class Ccp::Persistent::Dir < Ccp::Persistent::Base
   end
 
   def keys
-    Dir["#{path}/*.#{ext}"].map{|i| File.basename(i, ".*")}.sort
+    Dir["#{path!}/*.#{ext}"].map{|i| File.basename(i, ".*")}.sort
   end
 
   def truncate
@@ -41,6 +41,14 @@ class Ccp::Persistent::Dir < Ccp::Persistent::Base
   end
 
   private
+    def path!
+      if path.exist?
+        path
+      else
+        raise Ccp::Persistent::NotFound, path.to_s
+      end
+    end
+
     def path_for(key, mkdir = true)
       path.mkpath if mkdir
       path + "#{key}.#{ext}"

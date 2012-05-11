@@ -48,7 +48,7 @@ class Ccp::Persistent::Base
   end
 
   def read!
-    keys.inject({}) {|h,k| h[k] = v; h}
+    keys.inject({}) {|h,k| h[k] = self[k]; h}
   end
 
   def keys
