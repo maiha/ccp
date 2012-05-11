@@ -36,7 +36,7 @@ class Ccp::Persistent::File < Ccp::Persistent::Base
   end
 
   def keys
-    read.keys.sort
+    read!.keys.sort
   end
 
   def truncate
