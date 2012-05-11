@@ -103,11 +103,46 @@ describe Ccp::Persistent::File do
     end
   end
 
+  describe "#read" do
+    it "should fetch all data if exists" do
+      db.open("w+"){|f| f.print(JSON.dump({"foo" => 1, "bar" => 2}))}
+      kvs = Ccp::Persistent::File.new(db, :json)
+      kvs.read.should == {"foo" =>1, "bar" =>2}
+    end
+
+    it "should raise NotFound if the path doesn't exist" do
+      kvs = Ccp::Persistent::File.new(db + "no-such-file", :json)
+      kvs.read.should == {}
+    end
+  end
+
+  describe "#read!" do
+    it "should fetch all data if exists" do
+      db.open("w+"){|f| f.print(JSON.dump({"foo" => 1, "bar" => 2}))}
+      kvs = Ccp::Persistent::File.new(db, :json)
+      kvs.read!.should == {"foo" =>1, "bar" =>2}
+    end
+
+    it "should raise NotFound if the path doesn't exist" do
+      kvs = Ccp::Persistent::File.new(db + "no-such-file", :json)
+      lambda {
+        kvs.read!
+      }.should raise_error(Ccp::Persistent::NotFound)
+    end
+  end
+
   describe "#keys" do
     it "should return a sorted array of key names filtered by given ext" do
       db.open("w+"){|f| f.print(JSON.dump({"foo" => 1, "bar" => "xxx"}))}
       kvs = Ccp::Persistent::File.new(db, :json)
       kvs.keys.should == ["bar", "foo"]
+    end
+
+    it "should raise NotFound if the path doesn't exist" do
+      kvs = Ccp::Persistent::File.new(db + "no-such-file", :json)
+      lambda {
+        kvs.keys
+      }.should raise_error(Ccp::Persistent::NotFound)
     end
   end
 

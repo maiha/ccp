@@ -76,6 +76,36 @@ describe Ccp::Persistent::Dir do
     end
   end
 
+  describe "#read" do
+    it "should fetch all data if exists" do
+      (root + "foo.json").open("w+"){|f| f.print "1"}
+      (root + "bar.json").open("w+"){|f| f.print "2"}
+      kvs = Ccp::Persistent::Dir.new(root, :json)
+      kvs.read.should == {"foo"=>1, "bar"=>2}
+    end
+
+    it "should return {} if the path doesn't exist" do
+      kvs = Ccp::Persistent::Dir.new(root + "no-such-path", :json)
+      kvs.read.should == {}
+    end
+  end
+
+  describe "#read!" do
+    it "should fetch all data if exists" do
+      (root + "foo.json").open("w+"){|f| f.print "1"}
+      (root + "bar.json").open("w+"){|f| f.print "2"}
+      kvs = Ccp::Persistent::Dir.new(root, :json)
+      kvs.read!.should == {"foo"=>1, "bar"=>2}
+    end
+
+    it "should raise NotFound if the path doesn't exist" do
+      kvs = Ccp::Persistent::Dir.new(root + "no-such-path", :json)
+      lambda {
+        kvs.read!
+      }.should raise_error(Ccp::Persistent::NotFound)
+    end
+  end
+
   describe "#keys" do
     it "should return a sorted array of key names filtered by given ext" do
       ["1.json", "2.yaml", "3.json"].each do |i|
@@ -84,6 +114,13 @@ describe Ccp::Persistent::Dir do
 
       kvs = Ccp::Persistent::Dir.new(root, :json)
       kvs.keys.should == ["1","3"]
+    end
+
+    it "should raise NotFound if the path doesn't exist" do
+      kvs = Ccp::Persistent::Dir.new(root + "no-such-path", :json)
+      lambda {
+        kvs.keys
+      }.should raise_error(Ccp::Persistent::NotFound)
     end
   end
 
