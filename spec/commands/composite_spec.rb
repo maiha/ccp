@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Ccp::Commands::Composite do
   describe "(instance)" do
-    subject { Object.new.extend Ccp::Commands::Composite } 
+    subject { Program.new }
 
     # data container
     it { should respond_to(:data?) }
