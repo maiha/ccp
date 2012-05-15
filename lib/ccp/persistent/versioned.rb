@@ -48,11 +48,14 @@ class Ccp::Persistent::Versioned
     extend self
   end
 
+  attr_reader :kvs
+  attr_reader :ext
+
   def initialize(dir, options = {})
-    @path        = Pathname(dir)
-    @default_kvs = options[:kvs] || :dir
-    @default_ext = options[:ext] || :json
-    @storages    = {}
+    @path     = Pathname(dir)
+    @kvs      = options[:kvs] || :dir
+    @ext      = options[:ext] || :json
+    @storages = {}
 
     @path.mkpath
   end
@@ -80,11 +83,11 @@ class Ccp::Persistent::Versioned
 
   # 指定したストレージを返す。存在しなければ作成して返す
   def [](key)
-    storage = Storage.complete(key, path, @default_kvs, @default_ext)
+    storage = Storage.complete(key, path, @kvs, @ext)
     @storages[storage.to_s] ||= storage.create
   end
 
   def inspect
-    "<Kvs::Versioned dir=#{path} kvs=#{@default_kvs} ext=#{@default_ext}>"
+    "<Kvs::Versioned dir=#{path} kvs=#{@kvs} ext=#{@ext}>"
   end
 end

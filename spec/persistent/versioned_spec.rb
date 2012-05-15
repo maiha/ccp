@@ -10,6 +10,12 @@ describe Ccp::Persistent::Versioned do
     root.mkpath
   end
 
+  describe "(accessors)" do
+    subject { Ccp::Persistent::Versioned.new(root, :kvs=>"dir", :ext=>"yaml") }
+    its(:kvs) { should == "dir" }
+    its(:ext) { should == "yaml" }
+  end
+
   describe "#latest" do
     it "should return a kvs with the latest dated file" do
       # create directories

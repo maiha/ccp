@@ -19,6 +19,8 @@ describe Ccp::Commands::Fixturable do
     it { should respond_to("ext") }
     it { should respond_to("fixture") }
     its(:fixture) { should respond_to("options") }
+
+    it { should respond_to("test") }
   end
 
   context "Ccp::Commands::Composite" do
@@ -33,6 +35,8 @@ describe Ccp::Commands::Fixturable do
     it { should respond_to("ext") }
     it { should respond_to("fixture") }
     its(:fixture) { should respond_to("options") }
+
+    it { should respond_to("test") }
   end
 
   context "Ccp::Invokers::Base" do
@@ -47,6 +51,8 @@ describe Ccp::Commands::Fixturable do
     it { should respond_to("ext") }
     it { should respond_to("fixture") }
     its(:fixture) { should respond_to("options") }
+
+    it { should respond_to("test") }
   end
 
   context "included class" do
@@ -61,6 +67,8 @@ describe Ccp::Commands::Fixturable do
     it { should respond_to("ext") }
     it { should respond_to("fixture") }
     its(:fixture) { should respond_to("options") }
+
+    it { should respond_to("test") }
   end
 end
 
