@@ -1,14 +1,12 @@
 module Ccp
   module Commands
     module Core
-      include Receivable
-      include Commentable
-      include Executable
-
       def self.included(base)
         super
         base.class_eval do
-          extend ClassMethods
+          include Receivable
+          include Commentable
+          include Executable
           include Fixturable
         end
       end

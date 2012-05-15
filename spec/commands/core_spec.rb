@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Ccp::Commands::Core do
   describe "(accessor)" do
-    subject { Object.new.extend Ccp::Commands::Core } 
+    subject { Cmd1.new }
 
     # data container
     it { should respond_to(:data?) }

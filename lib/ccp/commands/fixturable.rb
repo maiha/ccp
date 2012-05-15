@@ -6,17 +6,9 @@ module Ccp
           include Ccp::Utils::Options
           dsl_accessor :fixture, options(:stub, :mock, :fail, :save, :keys, :dir, :kvs, :ext)
 
-          extend Testable
-        end
-      end
-
-      module Testable
-        def test(options = {})
-          c = new
-          c.receiver = options.delete(:receiver)
-          c.receiver.parse!(options)
-          c.receiver.test(c)
-          return c
+          def self.test(options = {})
+            execute({:fixture_test=>true}.merge(options))
+          end
         end
       end
     end

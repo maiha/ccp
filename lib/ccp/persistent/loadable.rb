@@ -9,6 +9,7 @@ module Ccp::Persistent::Loadable
 
   private
     def load_kvs_lookup_by_filename(file)
+      return Ccp::Persistent::Dir if File.directory?(file.to_s)
       case file.to_s
       when %r{/$}    ; Ccp::Persistent::Dir
       when %r{\.tsv$}; Ccp::Persistent::Tsv

@@ -8,10 +8,18 @@ module Ccp
           super
           observer.stop
           fixture_save(cmd, observer.read, observer.write)
-        else
-          fixture_stub(cmd)
+
+        elsif fixture_test?(cmd)
+          stub = fixture_versioned_for(cmd)["stub"].path
+          fixture_stub(cmd.class.stub || (stub.exist? ? stub : nil))
           super
-          fixture_mock(cmd)
+          mock = fixture_versioned_for(cmd)["mock"].path
+          fixture_mock(cmd, cmd.class.mock || mock)
+
+        else
+          fixture_stub(cmd.class.stub)
+          super
+          fixture_mock(cmd, cmd.class.mock)
         end
       end
 
@@ -20,6 +28,7 @@ module Ccp
 
         # Schema
         self[:fixture_save]     = Object # Define schema explicitly to accept true|false|Proc
+        self[:fixture_test]     = Object # Define schema explicitly to accept true|false|Proc
         self[:fixture_keys]     = Object # Define schema explicitly to accept true|[String]
 
         # Values
@@ -27,6 +36,7 @@ module Ccp
         self[:fixture_kvs]      = :file
         self[:fixture_ext]      = :json
         self[:fixture_save]     = false
+        self[:fixture_test]     = false
         self[:fixture_keys]     = true
         self[:fixture_path_for] = default_fixture_path_for
       end
@@ -39,27 +49,16 @@ module Ccp
         super
       end
 
-      def test(cmd)
-        # set stub if exist
-        stub = fixture_versioned_for(cmd)["stub"].path
-        runtime_stubs[cmd] = stub if stub.exist?
-
-        # set mock
-        runtime_mocks[cmd] = fixture_versioned_for(cmd)["mock"].path
-
-        execute(cmd)
-      end
-
-      def fixture_stub(cmd)
-        path = cmd.class.stub || runtime_stubs[cmd] or return
+      def fixture_stub(path)
+        return unless path
         hash = Ccp::Persistent.load(path).read!
         data.merge!(hash)
       rescue Ccp::Persistent::NotFound => e
         raise Ccp::Fixtures::NotFound, e.to_s
       end
 
-      def fixture_mock(cmd)
-        path = cmd.class.mock || runtime_mocks[cmd] or return
+      def fixture_mock(cmd, path)
+        return unless path
         hash = Ccp::Persistent.load(path).read!
 
         hash.keys.each do |key|
@@ -124,6 +123,22 @@ module Ccp
         # mock
         storage = cmd.class.mock ? kvs.new(cmd.class.mock, versioned.ext) : versioned["mock"]
         storage.save(mock, fixture_keys_filter(keys, mock.keys))
+      end
+
+      def fixture_test?(cmd)
+        case (obj = self[:fixture_test])
+        when true  ; true
+        when false ; false
+        when String; cmd.class.name == obj
+        when Array ; ary = obj.map(&:to_s); name = cmd.class.name
+          return false if ary.blank?
+          return true  if ary.include?(name)
+          return false if ary.include?("!#{name}")
+          return true  if ary.size == ary.grep(/^!/).size
+          return false
+        when Proc  ; instance_exec(cmd, &obj).must(true,false) {raise ":fixture_test should return true|false"}
+        else; raise ":fixture_test is invalid: #{obj.class}"
+        end
       end
 
       def fixture_keys_filter(acl, keys)

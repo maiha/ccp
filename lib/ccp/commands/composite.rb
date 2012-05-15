@@ -4,9 +4,8 @@ module Ccp
       def self.included(base)
         super
         base.class_eval do
-          extend ClassMethods
-          extend Executable::ClassMethods
-          include Fixturable
+          include Core
+          extend CommandManager
         end
       end
 
@@ -25,7 +24,7 @@ module Ccp
       ######################################################################
       ### Class Methods
 
-      module ClassMethods
+      module CommandManager
         include Resolvable
 
         def prepend_command(klass, *args, &block)

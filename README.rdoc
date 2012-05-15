@@ -271,7 +271,9 @@ This generates "tmp/stub.json", "tmp/mock.json".
 Once you got fixtures, call "test" method to test it.
 
     Cmd.test
+    # or
+    #     Cmd.execute(:fixture_test=>true)
 
 This automatically searchs fixtures when no fixture files are explicitly given.
-The search algorithm is as same as 'fixture_save'.
+This mechanism is as same as 'fixture_save'.
 
