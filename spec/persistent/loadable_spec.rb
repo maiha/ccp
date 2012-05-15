@@ -29,12 +29,25 @@ describe Ccp::Persistent do
       its(:source) { should == 'tmp/foo.json' }
     end
 
-    context "('tmp/foo.json with exsited directory')" do
+    context "(Pathname('tmp/foo.json) with existed directory')" do
+      before { FileUtils.mkdir_p("tmp/foo.json") }
+      subject { Ccp::Persistent.load(Pathname('tmp/foo.json')) }
+      its(:class)  { should == Ccp::Persistent::Dir }
+      its(:ext)    { should == "json" }
+      its(:source) { should == Pathname('tmp/foo.json') }
+    end
+
+    context "('tmp/foo.json with existed directory')" do
       before { FileUtils.mkdir_p("tmp/foo.json") }
       subject { Ccp::Persistent.load('tmp/foo.json') }
       its(:class)  { should == Ccp::Persistent::Dir }
       its(:ext)    { should == "json" }
       its(:source) { should == 'tmp/foo.json' }
+
+      it "can read!" do
+        save_fixture("tmp/foo.json/a.json", 1)
+        subject.read!.should == {"a"=>1}
+      end
     end
 
     context "('tmp/foo')" do
