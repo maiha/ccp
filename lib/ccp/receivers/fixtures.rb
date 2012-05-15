@@ -39,19 +39,34 @@ module Ccp
         super
       end
 
+      def test(cmd)
+        # set stub if exist
+        stub = fixture_versioned_for(cmd)["stub"].path
+        runtime_stubs[cmd] = stub if stub.exist?
+
+        # set mock
+        runtime_mocks[cmd] = fixture_versioned_for(cmd)["mock"].path
+
+        execute(cmd)
+      end
+
       def fixture_stub(cmd)
-        path = cmd.class.stub or return
+        path = cmd.class.stub || runtime_stubs[cmd] or return
         hash = Ccp::Persistent.load(path).read!
         data.merge!(hash)
+      rescue Ccp::Persistent::NotFound => e
+        raise Ccp::Fixtures::NotFound, e.to_s
       end
 
       def fixture_mock(cmd)
-        path = cmd.class.mock or return
+        path = cmd.class.mock || runtime_mocks[cmd] or return
         hash = Ccp::Persistent.load(path).read!
 
         hash.keys.each do |key|
           fixture_validate(cmd, key, data, hash)
         end
+      rescue Ccp::Persistent::NotFound => e
+        raise Ccp::Fixtures::NotFound, e.to_s
       end
 
       def fixture_validate(cmd, key, data, hash)
@@ -71,12 +86,12 @@ module Ccp
 
       def default_fixture_fail(cmd, key, exp, got)
         if exp == nil and got == nil
-          raise "#{cmd.class} should write #{key} but not found"
+          raise Failed, "#{cmd.class} should write #{key} but not found"
         end
 
         exp_info = "%s(%s)" % [exp.inspect.truncate(200), Must::StructInfo.new(exp).compact.inspect]
         got_info = "%s(%s)" % [got.inspect.truncate(200), Must::StructInfo.new(got).compact.inspect]
-        raise "%s should create %s for %s, but got %s" % [cmd.class, exp_info, key, got_info]
+        raise Failed, "%s should create %s for %s, but got %s" % [cmd.class, exp_info, key, got_info]
       end
 
       def fixture_save?(cmd)
@@ -98,21 +113,16 @@ module Ccp
       end
 
       def fixture_save(cmd, stub, mock)
-        path = self[:fixture_path_for].call(cmd)
-        path = Pathname(cmd.class.dir) + cmd.class.name.underscore if cmd.class.dir
-
+        versioned = fixture_versioned_for(cmd)
         keys = cmd.class.keys || self[:fixture_keys]
-        kvs  = cmd.class.kvs  || self[:fixture_kvs]
-        ext  = cmd.class.ext  || self[:fixture_ext]
-
-        versioned = Ccp::Persistent::Versioned.new(path, :kvs=>kvs, :ext=>ext)
+        kvs  = Ccp::Persistent.lookup(versioned.kvs)
 
         # stub
-        storage = cmd.class.stub ? Ccp::Persistent.lookup(kvs).new(cmd.class.stub, ext) : versioned["stub"]
+        storage = cmd.class.stub ? kvs.new(cmd.class.stub, versioned.ext) : versioned["stub"]
         storage.save(stub, fixture_keys_filter(keys, stub.keys))
 
         # mock
-        storage = cmd.class.mock ? Ccp::Persistent.lookup(kvs).new(cmd.class.mock, ext) : versioned["mock"]
+        storage = cmd.class.mock ? kvs.new(cmd.class.mock, versioned.ext) : versioned["mock"]
         storage.save(mock, fixture_keys_filter(keys, mock.keys))
       end
 
@@ -136,6 +146,26 @@ module Ccp
       def default_fixture_path_for
         proc{|cmd| settings.path(:fixture_dir) + cmd.class.name.underscore}
       end
+
+      private
+        def runtime_stubs
+          @runtime_stubs ||= {} # key:cmd object, val:filename
+        end
+
+        def runtime_mocks
+          @runtime_mocks ||= {} # key:cmd object, val:filename
+        end
+
+        def fixture_versioned_for(cmd)
+          dir  = cmd.class.dir
+          path = dir ? (Pathname(dir) + cmd.class.name.underscore) : self[:fixture_path_for].call(cmd)
+
+          kvs  = cmd.class.kvs || self[:fixture_kvs]
+          ext  = cmd.class.ext || self[:fixture_ext]
+
+          versioned = Ccp::Persistent::Versioned.new(path, :kvs=>kvs, :ext=>ext)
+          return versioned
+        end
     end
   end
 end

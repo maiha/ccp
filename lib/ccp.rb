@@ -5,6 +5,8 @@ require "active_support/core_ext"
 require "ccp/version"
 
 module Ccp
+  Failed = Class.new(RuntimeError)
+
   autoload :Utils,             'ccp/utils'
   autoload :Fixtures,          'ccp/fixtures'
   autoload :Commands,          'ccp/commands'
