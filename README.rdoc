@@ -265,3 +265,13 @@ Static options(hard code) are also available.
     Cmd.execute(:a=>1)
 
 This generates "tmp/stub.json", "tmp/mock.json".
+
+=== Test
+
+Once you got fixtures, call "test" method to test it.
+
+    Cmd.test
+
+This automatically searchs fixtures when no fixture files are explicitly given.
+The search algorithm is as same as 'fixture_save'.
+
