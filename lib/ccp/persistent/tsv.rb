@@ -7,15 +7,37 @@ class Ccp::Persistent::Tsv < Ccp::Persistent::Dir
 
   def load_tsv(path)
     hash = {}
+    prev = []
+
     path.readlines.each_with_index do |line, i|
       no = i+1
       key, val = line.split(/\t/,2)
-      unless val
-        $stderr.puts "#{self.class}#load_tsv: value not found. key='#{key}' (line: #{no})"
-        next
+
+      if val
+        # flush previous line
+        if prev.size == 2
+          hash[prev[0]] = decode(prev[1])
+          prev = []
+        end
+
+        # push prev line
+        prev = [key, val]
+
+      else
+        # maybe sequencial lines for one value
+        if prev.size == 2
+          prev[1] = prev[1] + "\n" + key
+
+        else
+          $stderr.puts "#{self.class}#load_tsv: value not found. key='#{key}' (line: #{no})"
+          next
+        end
       end
-      obj = decode(val)
-      hash[key] = obj
+    end
+
+    # flush last line
+    if prev.size == 2
+      hash[prev[0]] = decode(prev[1])
     end
 
     return hash
@@ -33,7 +55,8 @@ class Ccp::Persistent::Tsv < Ccp::Persistent::Dir
       end
 
     keys.each do |key|
-      f.puts "%s\t%s\n" % [key, encode(hash[key])]
+      value = encode(hash[key]).sub(/\n+\Z/m, '') # strip last LF for human-readability
+      f.puts "%s\t%s\n" % [key, value]
     end
   end
 
