@@ -39,7 +39,7 @@ describe Ccp::Receivers::Fixtures do
     it "should raise when current data doesn't match the given data" do
       lambda {
         Cmd1StubInvalidMock.execute
-      }.should raise_error(/should create/)
+      }.should raise_error(/breadcrumbs.*expected.*got.*String/)
     end
   end
 
