@@ -116,6 +116,24 @@ This profile option prints benchmarks of commands.
   ...
 
 
+== Skip commands
+
+"skip" prefixed data key names are reserved for command skipping feature.
+When data[:skip_XXX] given, the XXX command won't be invoked.
+
+  class Program
+    include Ccp::Commands::Composite
+    command Cmd1
+    command Cmd2
+  end
+
+  # normal case
+  Program.execute                       # => Both Cmd1 and Cmd2 will be called
+
+  # with skip
+  Program.execute(:skip_cmd1 => true)   # => Both Cmd2 will be called
+
+
 == Fixtures
 
 Let's imagine a following command that just read :a and write :x.

@@ -10,6 +10,7 @@ module Ccp
       include Executable
       include Profileable
       include Aroundable
+      include Skippable
       include Fixtures
 
       # ensure to call '#setup' for module initializations
