@@ -84,13 +84,7 @@ module Ccp
       end
 
       def default_fixture_fail(cmd, key, exp, got)
-        if exp == nil and got == nil
-          raise Failed, "#{cmd.class} should write #{key} but not found"
-        end
-
-        exp_info = "%s(%s)" % [exp.inspect.truncate(200), Must::StructInfo.new(exp).compact.inspect]
-        got_info = "%s(%s)" % [got.inspect.truncate(200), Must::StructInfo.new(got).compact.inspect]
-        raise Failed, "%s should create %s for %s, but got %s" % [cmd.class, exp_info, key, got_info]
+        Ccp::Utils::TestFailed::PROC.call(cmd, key, exp, got)
       end
 
       def fixture_save?(cmd)
