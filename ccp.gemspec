@@ -18,10 +18,17 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
+  if RUBY_VERSION >= "1.9"
+    s.add_dependency "activesupport"
+  else
+    s.add_dependency "activesupport", "~> 3.2.0"
+  end
+
   s.add_dependency "typed", ">= 0.2.2"
   s.add_dependency "must", ">= 0.2.7"
   s.add_dependency "dsl_accessor", ">= 0.4.1"
   s.add_dependency "json"
+  s.add_dependency "yajl-ruby"
 
   s.add_development_dependency "rspec"
 end
