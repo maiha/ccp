@@ -1,23 +1,22 @@
-module Ccp::Serializers::Json
-  include Ccp::Serializers::Core
+module Ccp
+  module Serializers
+    module Json
+      include Core
 
-  begin
-    require 'yajl'
-    Engine = Yajl
-  rescue LoadError
-    require 'json'
-    Engine = JSON
-  end
+      # use Yajl if possible
+      begin
+        require 'yajl'
+        Engine = Yajl
+      rescue LoadError
+        require 'json'
+        Engine = JSON
+      end
 
-  def self.ext
-    "json"
-  end
+      def ext         ; "json"           ; end
+      def encode(val) ; Engine.dump(val) ; end
+      def decode(val) ; Engine.load(val) ; end
 
-  def self.encode(val)
-    Engine.dump(val)
-  end
-
-  def self.decode(val)
-    Engine.load(val)
+      extend self
+    end
   end
 end

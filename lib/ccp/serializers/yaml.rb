@@ -1,15 +1,15 @@
-module Ccp::Serializers::Yaml
-  include Ccp::Serializers::Core
+require 'yaml'
 
-  def self.ext
-    "yaml"
-  end
+module Ccp
+  module Serializers
+    module Yaml
+      include Core
 
-  def self.encode(val)
-    val.to_yaml
-  end
+      def ext         ; "yaml"         ; end
+      def encode(val) ; val.to_yaml    ; end
+      def decode(val) ; YAML.load(val) ; end
 
-  def self.decode(val)
-    YAML.load(val)
+      extend self
+    end
   end
 end
