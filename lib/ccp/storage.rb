@@ -10,14 +10,18 @@ module Ccp
     end
 
     attr_reader :source, :kvs, :codec, :path
+    delegate :get, :set, :del, :keys, :read!, :to=>"@kvs"
 
     def initialize(source, kvs, codec)
       @source = source
       @codec  = codec
       @path   = Pathname(source)
-      @kvs    = kvs.new(source).extend(codec)
+      @kvs    = kvs.new(source).codec!(codec)
       @tables = {}
     end
+
+    ######################################################################
+    ### meta kvs
 
     def table_names
       tables                    # force to update @tables
@@ -33,11 +37,16 @@ module Ccp
     end
 
     def table(name, file = nil)
-      @tables[name.to_s] ||=
-        (
-         file ||= "%s.%s.%s" % [name, @codec.ext, @kvs.ext]
-         Storage.new((@path + file).to_s, @kvs.class, @codec)
-         )
+      @tables[name.to_s] ||= (
+        file ||= "%s.%s.%s" % [name, @codec.ext, @kvs.ext]
+        Storage.new((@path + file).to_s, @kvs.class, @codec)
+      )
     end
+
+    ######################################################################
+    ### kvs
+
+#    def 
+
   end
 end

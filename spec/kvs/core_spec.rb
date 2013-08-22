@@ -8,5 +8,6 @@ describe Ccp::Kvs::Core do
   it { should respond_to("get") }
   it { should respond_to("set") }
   it { should respond_to("del") }
+  it { should respond_to("keys") }
   it { should respond_to("touch") }
 end

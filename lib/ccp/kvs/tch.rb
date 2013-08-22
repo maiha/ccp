@@ -7,6 +7,7 @@ module Ccp
       def set(k,v) ; W{ super }; end
       def del(k)   ; W{ super }; end
       def count    ; R{ super }; end
+      def keys     ; R{ super }; end
     end
   end
 end

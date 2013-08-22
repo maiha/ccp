@@ -34,11 +34,22 @@ kvss.each do |kvs|
         it { should be }
       end
 
-      context ":foo => 2" do
+      context ":foo => '2'" do
         let(:key) { :foo }
-        let(:val) { 2    }
+        let(:val) { "2"  }
         it { should be }
       end
     end
+
+    describe "#read!" do
+      specify do
+        kvs.touch
+        kvs.codec! :json
+        kvs.set(:a, 1)
+        kvs.set(:b, ["x", 0])
+        kvs.read!.should == {"a"=>1, "b"=>["x", 0]}
+      end
+    end
+
   end
 end

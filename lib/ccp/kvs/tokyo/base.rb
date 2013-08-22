@@ -19,9 +19,9 @@ module Ccp
         ######################################################################
         ### kvs
 
-        def get(k)   ; @db[k]        ; end
-        def set(k,v) ; @db[k] = v    ; end
-        def del(k)   ; @db.delete(k) ; end
+        def get(k)   ; decode(@db[k.to_s])         ; end
+        def set(k,v) ; @db[k.to_s] = encode(v).to_s; end
+        def del(k)   ; decode(@db.delete(k.to_s))  ; end
 
         def path
           file = @source.to_s.sub(/#.*$/, '') # parse "foo.tch#mode=r"

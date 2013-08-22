@@ -14,7 +14,7 @@ module Ccp
 
         def get(k)
           tryR("get")
-          v = @db[k.to_s]
+          v = super
           if v
             return v
           else
@@ -28,14 +28,14 @@ module Ccp
 
         def set(k,v)
           tryW("set")
-          @db[k.to_s] = v.to_s or tokyo_error!("set(%s): " % k)
+          super or tokyo_error!("set(%s): " % k)
         end
 
         def del(k)
           tryW("del")
           v = get(k)
           if v
-            if @db.delete(k.to_s) 
+            if super
               return v
             else
               tokyo_error!("del(%s): " % k)
@@ -48,6 +48,37 @@ module Ccp
         def count
           tryR("count")
           return @db.rnum
+        end
+
+        ######################################################################
+        ### iterator
+
+        def each(&block)
+          each_keys do |key|
+            block.call(get(key))
+          end
+        end
+
+        def each_pair(&block)
+          each_keys do |key|
+            block.call(key, get(key))
+          end
+        end
+
+        def each_keys(&block)
+          tryR("each_keys")
+          @db.iterinit
+          while key = @db.iternext
+            block.call(key)
+          end
+        end
+
+        def keys
+          array = []
+          each_keys do |key|
+            array << key
+          end
+          return array
         end
 
       end

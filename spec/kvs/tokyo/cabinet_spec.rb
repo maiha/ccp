@@ -205,4 +205,17 @@ describe Ccp::Kvs::Tokyo::Cabinet do
     end
   end
 
+  ######################################################################
+  ### keys
+
+  describe "#keys" do
+    specify do
+      put(:foo, 1)
+      put(:bar, 2)
+      put(:baz, 3)
+
+      kvs.R!
+      kvs.keys.sort.should == %w( bar baz foo )
+    end
+  end
 end
