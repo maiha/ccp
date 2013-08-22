@@ -8,6 +8,7 @@ module Ccp
       def del(k)   ; W{ super }; end
       def count    ; R{ super }; end
       def keys     ; R{ super }; end
+      def read!    ; R{ super }; end
     end
   end
 end
