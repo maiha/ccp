@@ -38,15 +38,32 @@ describe Ccp::Storage do
       before  {
         tch.parent.mkpath
         system("tchmgr create #{tch}")
+        system("tchmgr put #{tch} a '[1,2]'")
+        system("tchmgr put #{tch} b 0.1")
       }
       specify do
-#        subject.read!.should == {}
+        subject.read!.should == {"a" => [1, 2], "b" => 0.1}
       end
     end
     
     context "(directory)" do
+      let(:tch) { tmp_path + "foo.json.tch" }
+      subject { Ccp::Storage.new(tch, Ccp::Kvs::Tch, Ccp::Serializers::Json) }
+      before  {
+        tch.mkpath
+        system("tchmgr create #{tch}/a.json.tch")
+        system("tchmgr put    #{tch}/a.json.tch x '[1,2]'")
+        system("tchmgr put    #{tch}/a.json.tch y []")
+        system("tchmgr create #{tch}/b.json.tch")
+        system("tchmgr put    #{tch}/b.json.tch y 0.1")
+      }
+      specify do
+        subject.read!.should == {
+          "a" => {"x" => [1, 2], "y" => []},
+          "b" => {"y" => 0.1},
+        }
+      end
     end
-    
 
   end
 

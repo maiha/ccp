@@ -46,7 +46,17 @@ module Ccp
     ######################################################################
     ### kvs
 
-#    def 
-
+    def read!
+      if @path.directory?
+        tables
+        hash = {}
+        @tables.each_pair do |k, kvs|
+          hash[k] = kvs.read!
+        end
+        return hash
+      else
+        return @kvs.read!
+      end
+    end
   end
 end
