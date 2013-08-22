@@ -2,7 +2,11 @@ require 'ccp/kvs/core'
 
 module Ccp
   module Kvs
-    NotFound = Class.new(RuntimeError)
+    Error        = Class.new(RuntimeError)
+    NotFound     = Class.new(Error)
+    NotConnected = Class.new(Error)
+    NotAllowed   = Class.new(Error)
+    IOError      = Class.new(Error)
 
     DICTIONARY = {}             # cache for (extname -> Kvs)
 
@@ -24,11 +28,19 @@ module Ccp
       DICTIONARY[key.to_s] = val
     end
 
+    def <<(kvs)
+      kvs.must(Core)
+      self[kvs.ext] = kvs
+    end
+
     alias :lookup :[]
     extend self
   end
 end
 
 require 'ccp/kvs/hash'
+require 'ccp/kvs/tokyo'
+require 'ccp/kvs/tch'
 
-Ccp::Kvs[:hash] = Ccp::Kvs::Hash
+Ccp::Kvs << Ccp::Kvs::Hash
+Ccp::Kvs << Ccp::Kvs::Tch

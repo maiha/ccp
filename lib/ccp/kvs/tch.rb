@@ -2,15 +2,11 @@ require 'tokyocabinet'
 
 module Ccp
   module Kvs
-    class Tch
-      include Core
-
-      def get(k)   ; raise NotImplementedError, "subclass resposibility"; end
-      def set(k,v) ; raise NotImplementedError, "subclass resposibility"; end
-      def del(k)   ; raise NotImplementedError, "subclass resposibility"; end
-
-      def open(*)  ; end;
-      def close    ; end;
+    class Tch < Tokyo::Cabinet
+      def get(k)   ; R{ super }; end
+      def set(k,v) ; W{ super }; end
+      def del(k)   ; W{ super }; end
+      def count    ; R{ super }; end
     end
   end
 end
