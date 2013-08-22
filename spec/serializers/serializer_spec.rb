@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper'
 
-Ccp::Serializers.dictionary.each_pair do |ext, serializer|
+Ccp::Serializers.each do |serializer|
   describe serializer do
-    its(:ext) { should == ext }
+    its(:ext) { should == serializer.ext }
 
     describe "#encode, #decode" do
       let(:obj) { raise "Sub context responsibility" }

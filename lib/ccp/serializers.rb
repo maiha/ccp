@@ -1,7 +1,4 @@
 require 'ccp/serializers/core'
-require 'ccp/serializers/json'
-require 'ccp/serializers/yaml'
-require 'ccp/serializers/msgpack'
 
 module Ccp
   module Serializers
@@ -9,24 +6,33 @@ module Ccp
     
     DICTIONARY = {}             # cache for (extname -> Serializer)
 
-    def self.reload!
-      DICTIONARY.clear
-    end
-    
-    def self.dictionary
-      if DICTIONARY.blank?
-        constants.each do |name|
-          v = const_get(name)
-          next unless v.is_a?(Core)
-          k = (begin; v.ext; rescue => e; e; end).to_s
-          DICTIONARY[k] = v
-        end
-      end
-      return DICTIONARY
+    include Enumerable
+    delegate :delete, :to=>"DICTIONARY"
+
+    def each(&block)
+      DICTIONARY.each_value(&block)
     end
 
-    def self.lookup(name)
-      return dictionary[name.to_s] || name.must(Core) { raise NotFound, "%s(%s) for %s" % [name, name.class, dictionary.inspect] }
+    def [](name)
+      return name.must.coerced(Core, Symbol => :to_s, String => proc{|key| DICTIONARY[key]}) {
+        raise NotFound, "%s(%s) for %s" % [name, name.class, DICTIONARY.keys.inspect]
+      }
     end
+
+    def []=(key, val)
+      DICTIONARY[key.to_s] = val.must(Core)
+    end
+
+    alias :lookup :[]
+    extend self
   end
 end
+
+require 'ccp/serializers/json'
+require 'ccp/serializers/yaml'
+require 'ccp/serializers/msgpack'
+
+Ccp::Serializers[:json]    = Ccp::Serializers::Json
+Ccp::Serializers[:yaml]    = Ccp::Serializers::Yaml
+Ccp::Serializers[:msgpack] = Ccp::Serializers::Msgpack
+

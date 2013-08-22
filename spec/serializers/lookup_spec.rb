@@ -4,30 +4,24 @@ require 'fileutils'
 
 describe Ccp::Serializers do
   # API
-  it { should respond_to(:dictionary) }
-  it { should respond_to(:reload!) }
   it { should respond_to(:lookup) }
-
-  describe "#dictionary" do
-    specify do
-      subject.dictionary.should be_kind_of(Hash)
-    end
-  end
 
   describe "#reload!" do
     def add_serializer(const_name)
       # define a new serializer
+      ext = const_name.downcase
       mod = Module.new
       mod.module_eval <<-EOF
         include Ccp::Serializers::Core
-        def ext; '#{const_name.downcase}'; end
+        def ext; '#{ext}'; end
         extend self
       EOF
-      Ccp::Serializers.const_set(const_name, mod)
+      Ccp::Serializers[ext] = mod
     end
 
-    def del_serialier(name)
-      Ccp::Serializers.instance_eval{ remove_const(name) }
+    def del_serialier(const_name)
+      ext = const_name.downcase
+      Ccp::Serializers.delete(ext)
     end
 
     specify do
@@ -37,7 +31,6 @@ describe Ccp::Serializers do
       begin
         # main
         add_serializer("Foo")
-        subject.reload!
         subject.lookup(:foo).should be_kind_of(Ccp::Serializers::Core)
       ensure
         del_serialier("Foo")
