@@ -2,9 +2,8 @@ module Ccp
   module Commands
     module Resolvable
       def resolve(klass)
-        klass.must.coerced(Class, Module) {
+        klass.is_a?(Class) or
           raise CommandNotFound, "expected Class or Module, but got #{klass.class}"
-        }
 
         if klass.ancestors.include?(Commands::Core)
           return klass # ok

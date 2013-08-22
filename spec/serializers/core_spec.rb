@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper'
-require 'fileutils'
 
 describe Ccp::Serializers::Core do
   subject { Object.new.extend Ccp::Serializers::Core }

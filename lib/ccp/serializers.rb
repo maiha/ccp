@@ -1,19 +1,38 @@
-module Ccp::Serializers
-  NotFound = Class.new(RuntimeError)
+require 'ccp/serializers/core'
 
-  autoload :Core , 'ccp/serializers/core'
-  autoload :Json , 'ccp/serializers/json'
-  autoload :Yaml , 'ccp/serializers/yaml'
+module Ccp
+  module Serializers
+    NotFound = Class.new(RuntimeError)
+    
+    DICTIONARY = {}             # cache for (extname -> Serializer)
 
-  def self.lookup(name)
-    case name
-    when :json, 'json'; Ccp::Serializers::Json
-    when :yaml, 'yaml'; Ccp::Serializers::Yaml
-    else
-      Ccp::Serializers::Core.instance_methods.each do |key|
-        name.must.duck(key) { raise NotFound, "%s: %s" % [name.class, name] }
-      end
-      return name
+    include Enumerable
+    delegate :delete, :to=>"DICTIONARY"
+
+    def each(&block)
+      DICTIONARY.each_value(&block)
     end
+
+    def [](name)
+      return name.must.coerced(Core, Symbol => :to_s, String => proc{|key| DICTIONARY[key]}) {
+        raise NotFound, "%s(%s) for %s" % [name, name.class, DICTIONARY.keys.inspect]
+      }
+    end
+
+    def []=(key, val)
+      DICTIONARY[key.to_s] = val.must(Core)
+    end
+
+    alias :lookup :[]
+    extend self
   end
 end
+
+require 'ccp/serializers/json'
+require 'ccp/serializers/yaml'
+require 'ccp/serializers/msgpack'
+
+Ccp::Serializers[:json]    = Ccp::Serializers::Json
+Ccp::Serializers[:yaml]    = Ccp::Serializers::Yaml
+Ccp::Serializers[:msgpack] = Ccp::Serializers::Msgpack
+
