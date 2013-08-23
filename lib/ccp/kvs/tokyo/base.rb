@@ -19,10 +19,6 @@ module Ccp
         ######################################################################
         ### kvs
 
-        def get(k)   ; decode(@db[k.to_s])         ; end
-        def set(k,v) ; @db[k.to_s] = encode(v).to_s; end
-        def del(k)   ; decode(@db.delete(k.to_s))  ; end
-
         def path
           file = @source.to_s.sub(/#.*$/, '') # parse "foo.tch#mode=r"
           Pathname(file)
@@ -30,7 +26,11 @@ module Ccp
 
         private
           def tokyo_error!(label = nil)
-            raise Ccp::Kvs::Tokyo::Error, "%s%s" % [label, error_message]
+            raise Ccp::Kvs::Tokyo::Error, "%s%s (%s)" % [label, error_message, @source]
+          end
+
+          def tokyo_error?
+            @db.ecode != HDB::ESUCCESS
           end
 
           def error_message

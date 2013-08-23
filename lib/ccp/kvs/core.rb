@@ -18,9 +18,9 @@ module Ccp
       def put(k,v) ; set(k,v) ; end
       def out(k)   ; del(k)   ; end
 
-      def codec!(c); @codec = Ccp::Serializers[c]; self; end
-      def encode(v); (v && @codec) ? @codec.encode(v) : v; end
-      def decode(v); (v && @codec) ? @codec.decode(v) : v; end
+      def codec!(c); @codec = Ccp::Serializers[c] ; self  ; end
+      def encode(v); @codec ? @codec.encode(v)        : v ; end
+      def decode(v); (v && @codec) ? @codec.decode(v) : v ; end
 
       def ext; self.class.name.split(/::/).last.to_s.downcase; end
       def self.included(klass)

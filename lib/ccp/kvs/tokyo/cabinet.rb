@@ -14,9 +14,9 @@ module Ccp
 
         def get(k)
           tryR("get")
-          v = super
+          v = @db[k.to_s]
           if v
-            return v
+            return decode(v)
           else
             if @db.ecode == HDB::ENOREC
               return nil
@@ -28,15 +28,17 @@ module Ccp
 
         def set(k,v)
           tryW("set")
-          super or tokyo_error!("set(%s): " % k)
+          val = encode(v)
+          @db[k.to_s] = val or
+            tokyo_error!("set(%s): " % k)
         end
 
         def del(k)
           tryW("del")
-          v = get(k)
+          v = @db[k.to_s]
           if v
-            if super
-              return v
+            if @db.delete(k.to_s)
+              return decode(v)
             else
               tokyo_error!("del(%s): " % k)
             end

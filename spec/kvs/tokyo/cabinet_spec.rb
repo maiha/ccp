@@ -140,11 +140,11 @@ describe Ccp::Kvs::Tokyo::Cabinet do
 
     context "(for write)" do
       before  { kvs.W! }
-      specify { kvs.set("foo", 2).should == "2" }
+      specify { lambda { kvs.set("foo", 2) }.should_not raise_error }
     end
 
     context "(for write block)" do
-      specify { kvs.W{ kvs.set("foo", 2) }.should == "2" }
+      specify { lambda { kvs.W{ kvs.set("foo", 2) }.should_not raise_error } }
     end
   end
 
