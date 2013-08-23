@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   end
 
   s.add_dependency "typed", ">= 0.2.2"
-  s.add_dependency "must", ">= 0.2.9"
+  s.add_dependency "must", ">= 0.3.0"
   s.add_dependency "dsl_accessor", ">= 0.4.1"
   s.add_dependency "json"
   s.add_dependency "yajl-ruby"
