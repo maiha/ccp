@@ -5,6 +5,7 @@ require "ccp/version"
 Gem::Specification.new do |s|
   s.name        = "ccp"
   s.version     = Ccp::VERSION
+  s.license     = 'MIT'
   s.authors     = ["maiha"]
   s.email       = ["maiha@wota.jp"]
   s.homepage    = "http://github.com/maiha/ccp"
