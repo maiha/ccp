@@ -140,11 +140,11 @@ describe Ccp::Kvs::Tokyo::Cabinet do
 
     context "(for write)" do
       before  { kvs.W! }
-      specify { kvs.set("foo", 2).should == "2" }
+      specify { lambda { kvs.set("foo", 2) }.should_not raise_error }
     end
 
     context "(for write block)" do
-      specify { kvs.W{ kvs.set("foo", 2) }.should == "2" }
+      specify { lambda { kvs.W{ kvs.set("foo", 2) }.should_not raise_error } }
     end
   end
 
@@ -205,4 +205,17 @@ describe Ccp::Kvs::Tokyo::Cabinet do
     end
   end
 
+  ######################################################################
+  ### keys
+
+  describe "#keys" do
+    specify do
+      put(:foo, 1)
+      put(:bar, 2)
+      put(:baz, 3)
+
+      kvs.R!
+      kvs.keys.sort.should == %w( bar baz foo )
+    end
+  end
 end

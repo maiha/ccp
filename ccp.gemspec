@@ -5,6 +5,7 @@ require "ccp/version"
 Gem::Specification.new do |s|
   s.name        = "ccp"
   s.version     = Ccp::VERSION
+  s.license     = 'MIT'
   s.authors     = ["maiha"]
   s.email       = ["maiha@wota.jp"]
   s.homepage    = "http://github.com/maiha/ccp"
@@ -25,7 +26,7 @@ Gem::Specification.new do |s|
   end
 
   s.add_dependency "typed", ">= 0.2.2"
-  s.add_dependency "must", ">= 0.2.9"
+  s.add_dependency "must", ">= 0.3.0"
   s.add_dependency "dsl_accessor", ">= 0.4.1"
   s.add_dependency "json"
   s.add_dependency "yajl-ruby"

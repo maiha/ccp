@@ -14,5 +14,6 @@ module Ccp
   autoload :Receivers,         'ccp/receivers'
   autoload :Persistent,        'ccp/persistent'
   autoload :Serializers,       'ccp/serializers'
+  autoload :Storage,           'ccp/storage'
   autoload :Kvs,               'ccp/kvs'
 end
