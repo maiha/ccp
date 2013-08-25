@@ -3,7 +3,7 @@ module Ccp
     NotFound = Class.new(RuntimeError)
 
     def self.load(path)
-      array = path.split(".")
+      array = path.to_s.split(".")
       kvs   = Ccp::Kvs[array.pop]
       codec = Ccp::Serializers[array.pop]
       return new(path, kvs, codec)

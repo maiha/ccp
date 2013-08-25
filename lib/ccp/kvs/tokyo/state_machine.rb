@@ -64,6 +64,7 @@ module Ccp
           case state
           when CLOSED   ; begin; W!(); yield; ensure; close; end
           when READABLE ; raise "reopen from read to write is not permitted"
+            # TODO: close -> W -> close -> R ???
           when WRITABLE ; yield
           else          ; raise "unknown state: #{state}"
           end
