@@ -39,7 +39,7 @@ module Ccp
     def table(name, file = nil)
       @tables[name.to_s] ||= (
         file ||= "%s.%s.%s" % [name, @codec.ext, @kvs.ext]
-        Storage.new((@path + file).to_s, @kvs.class, @codec)
+        @kvs.class.new((@path + file).to_s).codec!(@codec)
       )
     end
 
