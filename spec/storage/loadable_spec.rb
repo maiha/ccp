@@ -9,14 +9,15 @@ describe Ccp::Storage do
   describe ".load" do
     context "('tmp/foo.json.tch')" do
       subject { Ccp::Storage.load('tmp/foo.json.tch') }
+      it { should be_kind_of(Ccp::Storage) }
       its(:source) { should == 'tmp/foo.json.tch' }
       its(:kvs)    { should be_kind_of(Ccp::Kvs::Tch) }
       its(:codec)  { should == Ccp::Serializers::Json }
 
       describe "table(:foo)" do
         subject { Ccp::Storage.load('tmp/foo.json.tch').table(:bar) }
+        it { should be_kind_of(Ccp::Kvs::Tch) }
         its(:source) { should == 'tmp/foo.json.tch/bar.json.tch' }
-        its(:kvs)    { should be_kind_of(Ccp::Kvs::Tch) }
         its(:codec)  { should == Ccp::Serializers::Json }
       end
     end
