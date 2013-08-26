@@ -7,7 +7,7 @@ module Ccp
           dsl_accessor :fixture, options(:stub, :mock, :fail, :save, :keys, :dir, :kvs, :ext)
 
           def self.test(options = {})
-            execute({:fixture_test=>true}.merge(options))
+            execute({:fixture_test=>true,:logger=>Logger.new(STDOUT)}.merge(options))
           end
         end
       end
