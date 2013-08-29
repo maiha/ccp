@@ -53,6 +53,20 @@ module Ccp
         end
 
         ######################################################################
+        ### bulk operations (not DRY but fast)
+
+        def read!
+          tryR("read!")
+          hash = {}
+          @db.iterinit
+          while k = @db.iternext
+            v = @db.get(k) or tokyo_error!("get(%s): " % k)
+            hash[k] = decode(v)
+          end
+          return hash
+        end
+
+        ######################################################################
         ### iterator
 
         def each(&block)
@@ -67,12 +81,17 @@ module Ccp
           end
         end
 
-        def each_keys(&block)
+        def each_key(&block)
           tryR("each_keys")
           @db.iterinit
           while key = @db.iternext
             block.call(key)
           end
+        end
+
+        def each_keys(&block)
+          STDERR.puts "DEPRECATION WARNING: #{self.class}#each_keys is deprecated and will be removed in 0.4.0, use each_key instead"
+          each_key(&block)
         end
 
         def keys
