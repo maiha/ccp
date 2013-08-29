@@ -206,6 +206,35 @@ describe Ccp::Kvs::Tokyo::Cabinet do
   end
 
   ######################################################################
+  ### read!
+
+  describe "#read!" do
+    specify do
+      put(:foo, 1)
+      put(:bar, 2)
+
+      kvs.R!
+      kvs.read!.should == {"foo" => "1", "bar" => "2"}
+    end
+  end
+
+  ######################################################################
+  ### each
+
+  describe "#each" do
+    specify do
+      put(:foo, 1)
+      put(:bar, 2)
+
+      kvs.R!
+
+      hash = {}
+      kvs.each{|k,v| hash[k] = v}
+      hash.should == {"foo" => "1", "bar" => "2"}
+    end
+  end
+
+  ######################################################################
   ### keys
 
   describe "#keys" do
@@ -220,15 +249,29 @@ describe Ccp::Kvs::Tokyo::Cabinet do
   end
 
   ######################################################################
-  ### read!
+  ### first
 
-  describe "#read!" do
+  describe "#first" do
     specify do
       put(:foo, 1)
       put(:bar, 2)
 
       kvs.R!
-      kvs.read!.should == {"foo" => "1", "bar" => "2"}
+      first = kvs.first
+      first.should be_kind_of(Array)
+      first.size.should == 2
+      first[0].should =~ /^(foo|bar)$/
+      first[1].should =~ /^(1|2)$/
+    end
+  end
+
+  describe "#first_key" do
+    specify do
+      put(:foo, 1)
+      put(:bar, 2)
+
+      kvs.R!
+      kvs.first_key.should =~ /^(foo|bar)$/
     end
   end
 

@@ -58,7 +58,7 @@ module Ccp
         def read!
           tryR("read!")
           hash = {}
-          @db.iterinit
+          @db.iterinit or tokyo_error!("read!: ")
           while k = @db.iternext
             v = @db.get(k) or tokyo_error!("get(%s): " % k)
             hash[k] = decode(v)
@@ -70,9 +70,7 @@ module Ccp
         ### iterator
 
         def each(&block)
-          each_keys do |key|
-            block.call(get(key))
-          end
+          each_pair(&block)
         end
 
         def each_pair(&block)
@@ -82,8 +80,8 @@ module Ccp
         end
 
         def each_key(&block)
-          tryR("each_keys")
-          @db.iterinit
+          tryR("each_key")
+          @db.iterinit or tokyo_error!("each_key: ")
           while key = @db.iternext
             block.call(key)
           end
@@ -100,6 +98,21 @@ module Ccp
             array << key
           end
           return array
+        end
+
+        def first_key
+          tryR("first_key")
+          @db.iterinit or tokyo_error!("first_key: ")
+          return @db.iternext
+        end
+
+        def first
+          key = first_key
+          if key
+            return [key, get(key)]
+          else
+            return nil
+          end
         end
 
       end
