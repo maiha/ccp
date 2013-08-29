@@ -15,9 +15,41 @@ module Ccp
           @state || CLOSED
         end
 
+        def locker_info
+          pretty = proc{|c| Array(c).find{|i| i !~ %r{/ruby/[^/]+/gems/}} || c}
+
+          if CONNECTIONS[@source]
+            return pretty[CONNECTIONS[@source]]
+          end
+
+          target = File.basename(@source)
+          CONNECTIONS.each_pair do |file, reason|
+            return pretty[reason] if File.basename(file) == target
+          end
+
+          if CONNECTIONS.any?
+            return CONNECTIONS.inspect
+          else
+            return 'no brockers. maybe locked by other systems?'
+          end
+        end
+
         def open(mode)
           Pathname(@source.to_s).parent.mkpath
-          @db.open(@source.to_s, mode) or tokyo_error!("%s#open(%s,%s): " % [self.class, @source, mode])
+
+          # open and mark filename for threading error
+          if @db.open(@source.to_s, mode)
+            CONNECTIONS[@db.path.to_s] = (caller rescue "???")
+          elsif threading_error?
+            raise Tokyo::Locked, "%s is locked by %s" % [@source, locker_info]
+          else
+            tokyo_error!("%s#open(%s,%s): " % [self.class, @source, mode])
+          end
+        end
+
+        def __close__
+          @db.close
+          CONNECTIONS[@db.path] = nil
         end
 
         def close
@@ -28,7 +60,7 @@ module Ccp
           case state
           when CLOSED   ; # NOP
           when READABLE,
-               WRITABLE ; @db.close; @state = CLOSED
+               WRITABLE ; __close__; @state = CLOSED
           else          ; raise "unknown state: #{state}"
           end
         end
