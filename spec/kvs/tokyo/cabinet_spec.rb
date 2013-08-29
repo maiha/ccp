@@ -218,4 +218,18 @@ describe Ccp::Kvs::Tokyo::Cabinet do
       kvs.keys.sort.should == %w( bar baz foo )
     end
   end
+
+  ######################################################################
+  ### read!
+
+  describe "#read!" do
+    specify do
+      put(:foo, 1)
+      put(:bar, 2)
+
+      kvs.R!
+      kvs.read!.should == {"foo" => "1", "bar" => "2"}
+    end
+  end
+
 end
