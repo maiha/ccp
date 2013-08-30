@@ -74,7 +74,7 @@ module Ccp
         end
 
         def each_pair(&block)
-          each_keys do |key|
+          each_key do |key|
             block.call(key, get(key))
           end
         end
@@ -94,7 +94,7 @@ module Ccp
 
         def keys
           array = []
-          each_keys do |key|
+          each_key do |key|
             array << key
           end
           return array
