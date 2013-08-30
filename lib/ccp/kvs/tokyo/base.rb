@@ -33,6 +33,10 @@ module Ccp
             @db.ecode != HDB::ESUCCESS
           end
 
+          def threading_error?
+            @db.ecode == HDB::ETHREAD
+          end
+
           def error_message
             if @db
               # TODO: Where is adb_errmsg?
