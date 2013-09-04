@@ -6,6 +6,8 @@ module Ccp
       def del(k)   ; raise NotImplementedError, "subclass resposibility"; end
       def keys     ; raise NotImplementedError, "subclass resposibility"; end
       def read!    ; keys.inject({}){|h,k| h[k] = get(k); h }           ; end
+      def exist?(k); !! get(k)                                          ; end
+      def key?(k)  ; exist?(k)                                          ; end
 
       def open(*)  ; end
       def close    ; end

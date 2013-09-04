@@ -25,6 +25,18 @@ module Ccp
         end
 
         private
+          # Check ecode and then raise. too boring... The library should implement this as atomic operation!
+          def atomic(&block)
+            raise NotImplementedError, "tc keep ecode until new erros occured"
+
+            if tokyo_error?
+              raise "tc already error before atomic: #{@db.ecode}"
+            end
+            v = block.call
+            tokyo_error! if tokyo_error?
+            return v
+          end
+
           def tokyo_error!(label = nil)
             raise Ccp::Kvs::Tokyo::Error, "%s%s (%s)" % [label, error_message, @source]
           end
