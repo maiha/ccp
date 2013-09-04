@@ -47,6 +47,11 @@ module Ccp
           end
         end
 
+        def exist?(k)
+          tryR("exist?")
+          return @db.has_key?(k.to_s)
+        end
+
         def count
           tryR("count")
           return @db.rnum

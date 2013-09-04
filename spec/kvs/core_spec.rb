@@ -10,4 +10,6 @@ describe Ccp::Kvs::Core do
   it { should respond_to("del") }
   it { should respond_to("keys") }
   it { should respond_to("touch") }
+  it { should respond_to("exist?") }
+  it { should respond_to("key?") }
 end

@@ -275,4 +275,16 @@ describe Ccp::Kvs::Tokyo::Cabinet do
     end
   end
 
+  ######################################################################
+  ### exist?
+
+  describe "#exist?" do
+    specify do
+      put(:foo, 1)
+
+      kvs.R!
+      kvs.exist?(:foo).should be
+      kvs.exist?(:bar).should_not be
+    end
+  end
 end
