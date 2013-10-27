@@ -72,7 +72,15 @@ describe Ccp::Storage do
         }
       end
     end
+  end
 
+  describe "#close" do
+    before { FileUtils.rm_rf(tmp_path) if tmp_path.directory? }
+
+    let(:tch) { tmp_path + "foo.json.tch" }
+    subject { Ccp::Storage.new(tch, Ccp::Kvs::Tch, Ccp::Serializers::Json) }
+  
+    it { should respond_to(:close) }
   end
 
 #  it { should respond_to(:tables) }

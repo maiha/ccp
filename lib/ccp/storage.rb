@@ -43,6 +43,13 @@ module Ccp
       )
     end
 
+    def close
+      @tables.each_pair do |_,kvs|
+        kvs.close
+      end
+      @tables = {}
+    end
+
     ######################################################################
     ### kvs
 
