@@ -37,7 +37,7 @@ describe Ccp::Storage do
     end
   end
 
-  describe "#read!" do
+  describe "#read" do
     before { FileUtils.rm_rf(tmp_path) if tmp_path.directory? }
 
     context "(file)" do
@@ -50,7 +50,7 @@ describe Ccp::Storage do
         system("tchmgr put #{tch} b 0.1")
       }
       specify do
-        subject.read!.should == {"a" => [1, 2], "b" => 0.1}
+        subject.read.should == {"a" => [1, 2], "b" => 0.1}
       end
     end
     
@@ -66,7 +66,7 @@ describe Ccp::Storage do
         system("tchmgr put    #{tch}/b.json.tch y 0.1")
       }
       specify do
-        subject.read!.should == {
+        subject.read.should == {
           "a" => {"x" => [1, 2], "y" => []},
           "b" => {"y" => 0.1},
         }

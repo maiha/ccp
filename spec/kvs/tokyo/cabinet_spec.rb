@@ -206,15 +206,25 @@ describe Ccp::Kvs::Tokyo::Cabinet do
   end
 
   ######################################################################
-  ### read!
+  ### read / write
 
-  describe "#read!" do
+  describe "#read" do
     specify do
       put(:foo, 1)
       put(:bar, 2)
 
       kvs.R!
-      kvs.read!.should == {"foo" => "1", "bar" => "2"}
+      kvs.read.should == {"foo" => "1", "bar" => "2"}
+    end
+  end
+
+  describe "#write" do
+    specify do
+      kvs.W!
+      kvs.write("foo" => "1", "bar" => "2")
+
+      kvs.get("foo").should == "1"
+      kvs.get("bar").should == "2"
     end
   end
 

@@ -12,4 +12,6 @@ describe Ccp::Kvs::Core do
   it { should respond_to("touch") }
   it { should respond_to("exist?") }
   it { should respond_to("key?") }
+  it { should respond_to("read") }
+  it { should respond_to("write") }
 end

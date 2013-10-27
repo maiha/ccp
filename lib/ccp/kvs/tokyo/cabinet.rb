@@ -60,15 +60,24 @@ module Ccp
         ######################################################################
         ### bulk operations (not DRY but fast)
 
-        def read!
-          tryR("read!")
+        def read
+          tryR("read")
           hash = {}
-          @db.iterinit or tokyo_error!("read!: ")
+          @db.iterinit or tokyo_error!("read: ")
           while k = @db.iternext
             v = @db.get(k) or tokyo_error!("get(%s): " % k)
             hash[k] = decode(v)
           end
           return hash
+        end
+
+        def write(h)
+          tryW("write")
+          h.each_pair do |k,v|
+            val = encode(v)
+            @db[k.to_s] = val or tokyo_error!("write(%s): " % k)
+          end
+          return h
         end
 
         ######################################################################
