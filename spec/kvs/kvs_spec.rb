@@ -72,13 +72,23 @@ Ccp::Kvs.each do |klass|
       end
     end
 
-    describe "#read!" do
+    describe "#read" do
       specify do
         kvs.touch
         kvs.codec! :json
         kvs.set(:a, 1)
         kvs.set(:b, ["x", 0])
-        kvs.read!.should == {"a"=>1, "b"=>["x", 0]}
+        kvs.read.should == {"a"=>1, "b"=>["x", 0]}
+      end
+    end
+
+    describe "#write" do
+      specify do
+        kvs.touch
+        kvs.codec! :json
+        kvs.write("a"=>1, "b"=>["x", 0])
+        kvs["a"].should == 1
+        kvs["b"].should == ["x", 0]
       end
     end
 

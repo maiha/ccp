@@ -10,7 +10,7 @@ module Ccp
     end
 
     attr_reader :source, :kvs, :codec, :path
-    delegate :get, :set, :del, :keys, :read!, :to=>"@kvs"
+    delegate :get, :set, :del, :keys, :read, :to=>"@kvs"
 
     def initialize(source, kvs, codec)
       @source = source
@@ -43,20 +43,33 @@ module Ccp
       )
     end
 
+    def close
+      @tables.each_pair do |_,kvs|
+        kvs.close
+      end
+      @tables = {}
+    end
+
     ######################################################################
     ### kvs
 
-    def read!
+    def read
       if @path.directory?
         tables
         hash = {}
         @tables.each_pair do |k, kvs|
-          hash[k] = kvs.read!
+          hash[k] = kvs.read
         end
         return hash
       else
-        return @kvs.read!
+        return @kvs.read
       end
+    end
+
+    # backward compat (until 0.3.6)
+    def read!
+      STDERR.puts "DEPRECATION WARNING: #{self.class}#read! will be removed in 0.3.6, use read instead"
+      read
     end
   end
 end

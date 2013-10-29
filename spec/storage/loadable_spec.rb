@@ -37,7 +37,7 @@ describe Ccp::Storage do
     end
   end
 
-  describe "#read!" do
+  describe "#read" do
     before { FileUtils.rm_rf(tmp_path) if tmp_path.directory? }
 
     context "(file)" do
@@ -50,7 +50,7 @@ describe Ccp::Storage do
         system("tchmgr put #{tch} b 0.1")
       }
       specify do
-        subject.read!.should == {"a" => [1, 2], "b" => 0.1}
+        subject.read.should == {"a" => [1, 2], "b" => 0.1}
       end
     end
     
@@ -66,13 +66,21 @@ describe Ccp::Storage do
         system("tchmgr put    #{tch}/b.json.tch y 0.1")
       }
       specify do
-        subject.read!.should == {
+        subject.read.should == {
           "a" => {"x" => [1, 2], "y" => []},
           "b" => {"y" => 0.1},
         }
       end
     end
+  end
 
+  describe "#close" do
+    before { FileUtils.rm_rf(tmp_path) if tmp_path.directory? }
+
+    let(:tch) { tmp_path + "foo.json.tch" }
+    subject { Ccp::Storage.new(tch, Ccp::Kvs::Tch, Ccp::Serializers::Json) }
+  
+    it { should respond_to(:close) }
   end
 
 #  it { should respond_to(:tables) }

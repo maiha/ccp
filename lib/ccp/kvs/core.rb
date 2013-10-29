@@ -5,7 +5,6 @@ module Ccp
       def set(k,v) ; raise NotImplementedError, "subclass resposibility"; end
       def del(k)   ; raise NotImplementedError, "subclass resposibility"; end
       def keys     ; raise NotImplementedError, "subclass resposibility"; end
-      def read!    ; keys.inject({}){|h,k| h[k] = get(k); h }           ; end
       def exist?(k); !! get(k)                                          ; end
       def key?(k)  ; exist?(k)                                          ; end
 
@@ -31,6 +30,16 @@ module Ccp
           def self.ext; name.split(/::/).last.to_s.downcase; end
           def self.open(*args); new.tap{|kvs| kvs.open(*args)}; end
         end
+      end
+
+      # bulk operation
+      def read     ; keys.inject({}){|h,k| h[k] = get(k); h }           ; end
+      def write(h) ; h.each_pair{|k,v| set(k,v)}                        ; end
+
+      # backward compat (until 0.3.6)
+      def read!
+        STDERR.puts "DEPRECATION WARNING: #{self.class}#read! will be removed in 0.3.6, use read instead"
+        read
       end
     end
   end
