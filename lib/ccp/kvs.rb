@@ -39,8 +39,6 @@ module Ccp
 end
 
 require 'ccp/kvs/hash'
-require 'ccp/kvs/tokyo'
 require 'ccp/kvs/tch'
+require 'ccp/kvs/kch'
 
-Ccp::Kvs << Ccp::Kvs::Hash
-Ccp::Kvs << Ccp::Kvs::Tch
