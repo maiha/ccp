@@ -10,6 +10,14 @@ module Ccp
 
     DICTIONARY = {}             # cache for (extname -> Kvs)
 
+    def self.load(path)
+      array = path.to_s.split(".")
+      kvs   = Ccp::Kvs[array.pop].new(path)
+      codec = Ccp::Serializers[array.pop]
+      kvs.codec!(codec)
+      return kvs
+    end
+
     include Enumerable
     delegate :delete, :to=>"DICTIONARY"
 
