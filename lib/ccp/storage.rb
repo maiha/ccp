@@ -65,11 +65,5 @@ module Ccp
         return @kvs.read
       end
     end
-
-    # backward compat (until 0.3.6)
-    def read!
-      STDERR.puts "DEPRECATION WARNING: #{self.class}#read! will be removed in 0.3.6, use read instead"
-      read
-    end
   end
 end

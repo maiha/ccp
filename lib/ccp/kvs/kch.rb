@@ -1,15 +1,15 @@
 begin
-  require 'tokyocabinet'
+  require 'kyotocabinet'
 rescue LoadError
   load_error = true
 end
 
 unless load_error
-  require 'ccp/kvs/tokyo'
+  require 'ccp/kvs/kyoto'
 
   module Ccp
     module Kvs
-      class Tch < Tokyo::Cabinet
+      class Kch < Kyoto::Cabinet
         # core
         def get(k)        ; R{ super }; end
         def set(k,v)      ; W{ super }; end
@@ -29,5 +29,5 @@ unless load_error
     end
   end
 
-  Ccp::Kvs << Ccp::Kvs::Tch
+  Ccp::Kvs << Ccp::Kvs::Kch
 end

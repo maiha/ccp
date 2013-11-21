@@ -29,6 +29,13 @@ describe Ccp::Storage do
       its(:codec)  { should == Ccp::Serializers::Msgpack }
     end
 
+    context "('tmp/foo.msgpack.kch')" do
+      subject { Ccp::Storage.load('tmp/foo.msgpack.kch') }
+      its(:source) { should == 'tmp/foo.msgpack.kch' }
+      its(:kvs)    { should be_kind_of(Ccp::Kvs::Kch) }
+      its(:codec)  { should == Ccp::Serializers::Msgpack }
+    end
+
     context "(pathname)" do
       subject { Ccp::Storage.load(Pathname('tmp/foo.msgpack.tch')) }
       its(:source) { should == Pathname('tmp/foo.msgpack.tch') }
