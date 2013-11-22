@@ -64,8 +64,8 @@ module Ccp
           tryR("read")
           hash = {}
           @db.each do |k, v|
+            v or kyoto_error!("each(%s): " % k)
             hash[k] = decode(v)
-            printf("%s:%s\n", key, value)
           end
           return hash
         end
