@@ -3,6 +3,7 @@ require 'spec_helper'
 
 kvs_args = {}
 kvs_args["tch"] = "#{tmp_path}/kvs/foo.tch"
+kvs_args["kch"] = "#{tmp_path}/kvs/foo.kch"
 
 Ccp::Kvs.each do |klass|
   describe klass do

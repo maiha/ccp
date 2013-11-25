@@ -1,12 +1,12 @@
 module Ccp
   module Kvs
-    module Tokyo
+    module Kyoto
       class Cabinet < Base
         include StateMachine
 
         def initialize(source)
           @source = source
-          @db     = HDB.new
+          @db     = DB.new
         end
 
         ######################################################################
@@ -18,10 +18,10 @@ module Ccp
           if v
             return decode(v)
           else
-            if @db.ecode == HDB::ENOREC
+            if @db.error.is_a?(KyotoCabinet::Error::XNOREC)
               return nil
             else
-              tokyo_error!("get(%s): " % k)
+              kyoto_error!("get(%s): " % k)
             end
           end
         end
@@ -30,7 +30,7 @@ module Ccp
           tryW("set")
           val = encode(v)
           @db[k.to_s] = val or
-            tokyo_error!("set(%s): " % k)
+            kyoto_error!("set(%s): " % k)
         end
 
         def del(k)
@@ -40,7 +40,7 @@ module Ccp
             if @db.delete(k.to_s)
               return decode(v)
             else
-              tokyo_error!("del(%s): " % k)
+              kyoto_error!("del(%s): " % k)
             end
           else
             return nil
@@ -49,12 +49,12 @@ module Ccp
 
         def exist?(k)
           tryR("exist?")
-          return @db.has_key?(k.to_s)
+          return !! @db[k.to_s] # TODO: fast access
         end
 
         def count
           tryR("count")
-          return @db.rnum
+          return @db.count
         end
 
         ######################################################################
@@ -63,9 +63,8 @@ module Ccp
         def read
           tryR("read")
           hash = {}
-          @db.iterinit or tokyo_error!("read: ")
-          while k = @db.iternext
-            v = @db.get(k) or tokyo_error!("get(%s): " % k)
+          @db.each do |k, v|
+            v or kyoto_error!("each(%s): " % k)
             hash[k] = decode(v)
           end
           return hash
@@ -75,7 +74,7 @@ module Ccp
           tryW("write")
           h.each_pair do |k,v|
             val = encode(v)
-            @db[k.to_s] = val or tokyo_error!("write(%s): " % k)
+            @db[k.to_s] = val or kyoto_error!("write(%s): " % k)
           end
           return h
         end
@@ -88,20 +87,30 @@ module Ccp
         end
 
         def each_pair(&block)
-          each_key do |key|
-            block.call(key, get(key))
+          tryR("each_pair")
+
+          # TODO: Waste memory! But kc ignores exceptions in his each block.
+          array = []
+          @db.each{|k, v| array << [k, decode(v)]} or kyoto_error!("each_pair: ")
+          array.each do |a|
+            block.call(a[0], a[1])
           end
         end
 
         def each_key(&block)
           tryR("each_key")
-          @db.iterinit or tokyo_error!("each_key: ")
-          while key = @db.iternext
-            block.call(key)
+
+          # TODO: Waste memory! But kc ignores exceptions in his each block.
+          array = []
+          @db.each_key{|k| array << k.first} or kyoto_error!("each_key: ")
+          array.each do |k|
+            block.call(k)
           end
         end
 
         def keys
+          tryR("keys")
+
           array = []
           each_key do |key|
             array << key
@@ -110,18 +119,16 @@ module Ccp
         end
 
         def first_key
-          tryR("first_key")
-          @db.iterinit or tokyo_error!("first_key: ")
-          return @db.iternext
+          first.first
         end
 
         def first
-          key = first_key
-          if key
-            return [key, get(key)]
-          else
-            return nil
-          end
+          tryR("first")
+          @db.cursor_process {|cur|
+            cur.jump
+            k, v = cur.get(true)
+            return [k, decode(v)]
+          }
         end
 
       end

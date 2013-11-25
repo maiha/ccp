@@ -20,18 +20,19 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   if RUBY_VERSION >= "1.9"
-    s.add_dependency "activesupport"
+    s.add_runtime_dependency "activesupport"
   else
-    s.add_dependency "activesupport", "~> 3.2.0"
+    s.add_runtime_dependency "activesupport", "~> 3.2.0"
   end
 
-  s.add_dependency "typed", ">= 0.2.2"
-  s.add_dependency "must", ">= 0.3.0"
-  s.add_dependency "dsl_accessor", ">= 0.4.1"
-  s.add_dependency "json"
-  s.add_dependency "yajl-ruby"
-  s.add_dependency "msgpack", "> 0.4"
-  s.add_dependency "tokyocabinet", "~> 1.29.1"
+  s.add_runtime_dependency "typed", ">= 0.2.2"
+  s.add_runtime_dependency "must", ">= 0.3.0"
+  s.add_runtime_dependency "dsl_accessor", ">= 0.4.1"
+  s.add_runtime_dependency "json"
+  s.add_runtime_dependency "yajl-ruby"
+  s.add_runtime_dependency "msgpack", "> 0.4"
 
   s.add_development_dependency "rspec"
+  s.add_development_dependency "tokyocabinet", "~> 1.29.1"
+  s.add_development_dependency "kyotocabinet-ruby", "~> 1.27.1"
 end

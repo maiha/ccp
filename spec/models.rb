@@ -1,6 +1,6 @@
 module Breadcrumbing
   def this
-    "%s#%s" % [self.class.name, caller[0].to_s.scan(/`(.*?)'/).first]
+    "%s#%s" % [self.class.name, caller[0].to_s.scan(/`(.*?)'/).first.first]
   end
 end
 

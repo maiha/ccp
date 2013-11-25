@@ -16,3 +16,5 @@ module Ccp
     end
   end
 end
+
+Ccp::Kvs << Ccp::Kvs::Hash

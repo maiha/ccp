@@ -35,12 +35,6 @@ module Ccp
       # bulk operation
       def read     ; keys.inject({}){|h,k| h[k] = get(k); h }           ; end
       def write(h) ; h.each_pair{|k,v| set(k,v)}                        ; end
-
-      # backward compat (until 0.3.6)
-      def read!
-        STDERR.puts "DEPRECATION WARNING: #{self.class}#read! will be removed in 0.3.6, use read instead"
-        read
-      end
     end
   end
 end
