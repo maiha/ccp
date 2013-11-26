@@ -18,18 +18,16 @@ module Ccp
           if v
             return decode(v)
           else
-            if @db.error.is_a?(KyotoCabinet::Error::XNOREC)
-              return nil
-            else
-              kyoto_error!("get(%s): " % k)
-            end
+            # tc, kc is not safe for file deletion or unexpected stuffs
+            # if @db.error.is_a?(KyotoCabinet::Error::XNOREC)
+            return nil
           end
         end
 
         def set(k,v)
           tryW("set")
           val = encode(v)
-          @db[k.to_s] = val or
+          @db.set(k.to_s, val) or
             kyoto_error!("set(%s): " % k)
         end
 

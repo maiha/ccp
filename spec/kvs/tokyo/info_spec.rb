@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper'
 
-describe Ccp::Kvs::Tokyo::Info do
+describe "Ccp::Kvs::Tokyo::Info", :tch do
   let(:tmp) { tmp_path + "kvs/tokyo/info" }
   before { FileUtils.rm_rf(tmp) if tmp.directory? }
 

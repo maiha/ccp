@@ -2,7 +2,8 @@
 require 'spec_helper'
 
 codecs = %w( json msgpack )
-exts   = %w( tch kch )
+exts   = %w( kch )
+exts << "tch" if defined?(TokyoCabinet)
 
 codecs.product(exts).each do |codec, ext|
   dir = "foo.#{codec}.#{ext}"
