@@ -6,7 +6,7 @@ describe Ccp::Storage do
     Ccp::Storage.should respond_to(:load)
   end
 
-  describe ".load" do
+  describe ".load", :tch do
     context "('tmp/foo.json.tch')" do
       subject { Ccp::Storage.load('tmp/foo.json.tch') }
       it { should be_kind_of(Ccp::Storage) }
@@ -29,13 +29,6 @@ describe Ccp::Storage do
       its(:codec)  { should == Ccp::Serializers::Msgpack }
     end
 
-    context "('tmp/foo.msgpack.kch')" do
-      subject { Ccp::Storage.load('tmp/foo.msgpack.kch') }
-      its(:source) { should == 'tmp/foo.msgpack.kch' }
-      its(:kvs)    { should be_kind_of(Ccp::Kvs::Kch) }
-      its(:codec)  { should == Ccp::Serializers::Msgpack }
-    end
-
     context "(pathname)" do
       subject { Ccp::Storage.load(Pathname('tmp/foo.msgpack.tch')) }
       its(:source) { should == Pathname('tmp/foo.msgpack.tch') }
@@ -44,7 +37,16 @@ describe Ccp::Storage do
     end
   end
 
-  describe "#read" do
+  describe ".load", :kch do
+    context "('tmp/foo.msgpack.kch')" do
+      subject { Ccp::Storage.load('tmp/foo.msgpack.kch') }
+      its(:source) { should == 'tmp/foo.msgpack.kch' }
+      its(:kvs)    { should be_kind_of(Ccp::Kvs::Kch) }
+      its(:codec)  { should == Ccp::Serializers::Msgpack }
+    end
+  end
+
+  describe "#read", :tch do
     before { FileUtils.rm_rf(tmp_path) if tmp_path.directory? }
 
     context "(file)" do
@@ -81,7 +83,7 @@ describe Ccp::Storage do
     end
   end
 
-  describe "#close" do
+  describe "#close", :tch do
     before { FileUtils.rm_rf(tmp_path) if tmp_path.directory? }
 
     let(:tch) { tmp_path + "foo.json.tch" }

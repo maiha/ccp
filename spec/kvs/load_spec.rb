@@ -12,7 +12,7 @@ describe Ccp::Kvs do
 
   context "(unknown codec)" do
     specify do
-      expect{ Ccp::Kvs.load("foo.xxx.tch") }.to raise_error(/xxx/)
+      expect{ Ccp::Kvs.load("foo.xxx.kch") }.to raise_error(/xxx/)
     end
   end
 
@@ -26,7 +26,8 @@ describe Ccp::Kvs do
   ### Usally case
 
   codecs = %w( json msgpack )
-  exts   = %w( tch kch )
+  exts   = %w( kch )
+  exts << "tch" if defined?(TokyoCabinet)
 
   codecs.product(exts).each do |codec, ext|
     file = "foo.#{codec}.#{ext}"
