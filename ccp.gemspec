@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
-$:.push File.expand_path("../lib", __FILE__)
-require "ccp/version"
+require File.expand_path('../lib/ccp/version', __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = "ccp"
@@ -29,10 +28,24 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "must", ">= 0.3.0"
   s.add_runtime_dependency "dsl_accessor", ">= 0.4.1"
   s.add_runtime_dependency "json"
-  s.add_runtime_dependency "yajl-ruby"
-  s.add_runtime_dependency "msgpack", "> 0.4"
+
+
+  if RUBY_PLATFORM == 'java'
+    s.platform = RUBY_PLATFORM
+    s.add_runtime_dependency "msgpack-jruby", "~> 1.3.2"
+  else
+    s.add_runtime_dependency "yajl-ruby"
+    s.add_runtime_dependency 'msgpack', '> 0.4'
+    s.add_runtime_dependency "tokyocabinet", "~> 1.29.1"
+  end
+
+  ### test
 
   s.add_development_dependency "rspec"
-  s.add_development_dependency "tokyocabinet", "~> 1.29.1"
-  s.add_development_dependency "kyotocabinet-ruby", "~> 1.27.1"
+  if defined?(JRUBY_VERSION)
+    s.add_runtime_dependency 'kyotocabinet-java'
+  else
+    s.add_development_dependency "tokyocabinet", "~> 1.29.1"
+    s.add_development_dependency "kyotocabinet-ruby", "~> 1.27.1"
+  end
 end

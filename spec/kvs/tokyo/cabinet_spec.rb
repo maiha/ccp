@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper'
 
-describe Ccp::Kvs::Tokyo::Cabinet do
+describe "Ccp::Kvs::Tokyo::Cabinet", :tch do
   let(:tmp) { tmp_path + "kvs/tokyo/cabinet" }
   let(:tch) { tmp + "foo.tch" }
   let(:kvs) { subject }

@@ -99,6 +99,17 @@ describe Ccp::Kvs::Kyoto::Cabinet do
       before  { put(:foo, 1); kvs.W! }
       specify { kvs.W { kvs.get("foo").should == "1" } }
     end
+
+    ### error: rare case
+
+    pending "TODO: tc,kc is not safe about file deletion" do
+      # ruby: + open(read) -----------------+ kvs.get ---
+      # file:                + delete kch ---------------
+      context "(for read with file deletion)" do
+        before  { put(:foo, 1); kvs.W!; kch.unlink }
+        specify { kvs.set("xxx", "_").should == false }
+      end
+    end
   end
 
   ######################################################################
