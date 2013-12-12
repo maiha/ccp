@@ -46,6 +46,29 @@ describe Ccp::Commands::Composite do
     end
 
     ######################################################################
+    ### explict flag
+
+    context "flag: nil" do
+      before { Cmd1.save nil }
+      execute(:fixture_save => false) { [] }
+      execute(:fixture_save => true ) { ["cmd1", "cmd2", "cmd3", "program"] }
+    end
+
+    context "flag: true" do
+      before { Cmd1.save true }
+      after  { Cmd1.save nil }
+      execute(:fixture_save => false) { ["cmd1"] }
+      execute(:fixture_save => true ) { ["cmd1", "cmd2", "cmd3", "program"] }
+    end
+
+    context "flag: false" do
+      before { Cmd1.save false }
+      after  { Cmd1.save nil }
+      execute(:fixture_save => false) { [] }
+      execute(:fixture_save => true ) { ["cmd2", "cmd3", "program"] }
+    end
+
+    ######################################################################
     ### accepts
 
     execute(:fixture_save => 'Cmd2') do
