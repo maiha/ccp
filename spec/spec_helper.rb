@@ -37,7 +37,7 @@ def breadcrumbs_receiver
 end
 
 def lookup_serializer(extname)
-  {".json"=>JSON, ".yaml"=>YAML}[extname] or raise "no serializers for #{extname}"
+  {".json"=>JSON, ".yaml"=>YAML, ".msgpack"=>MessagePack}[extname] or raise "no serializers for #{extname}"
 end
 
 def load_fixture(path)
