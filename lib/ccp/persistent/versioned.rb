@@ -54,7 +54,7 @@ class Ccp::Persistent::Versioned
   def initialize(dir, options = {})
     @path     = Pathname(dir)
     @kvs      = options[:kvs] || :dir
-    @ext      = options[:ext] || :json
+    @ext      = options[:ext] || :msgpack
     @storages = {}
 
     @path.mkpath

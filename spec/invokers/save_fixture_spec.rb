@@ -8,15 +8,16 @@ describe Ccp::Invokers::Base do
     end
 
     context "(:fixture_save=>true)" do
-      it "should generate stub/mock fixtures in tmp/fixtures as json files" do
+      it "should generate stub/mock fixtures in tmp/fixtures as msgpack files" do
         path = Pathname("tmp/fixtures")
         data = {:breadcrumbs => []}
         opts = {:fixture_save=>true}
 
         CompositeInvoker.execute(data.merge(opts))
 
-        (stub = path + "composite_invoker/stub.json" ).should exist
-        load_fixture(stub)["breadcrumbs"].should == 
+        stub = path + "composite_invoker/stub.msgpack"
+        stub.should exist
+        load_fixture("#{stub}/breadcrumbs.msgpack").should ==
           ["CompositeInvoker#before",
            "Cmd1#before", "Cmd1#execute", "Cmd1#after",
            "Cmd23#before",

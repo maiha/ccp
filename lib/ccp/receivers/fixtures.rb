@@ -33,8 +33,8 @@ module Ccp
 
         # Values
         self[:fixture_dir]      = "tmp/fixtures"
-        self[:fixture_kvs]      = :file
-        self[:fixture_ext]      = :json
+        self[:fixture_kvs]      = :dir
+        self[:fixture_ext]      = :msgpack
         self[:fixture_save]     = false
         self[:fixture_test]     = false
         self[:fixture_keys]     = true

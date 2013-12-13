@@ -12,7 +12,7 @@ class Ccp::Persistent::Dir < Ccp::Persistent::Base
   def load!(key)
     path = path_for(key)
     if path.exist?
-      decode(path.read{})
+      decode(path.open("rb").read{})
     else
       raise Ccp::Persistent::NotFound, key.to_s
     end
@@ -25,7 +25,7 @@ class Ccp::Persistent::Dir < Ccp::Persistent::Base
   end
 
   def []=(key, val)
-    path_for(key).open("w+"){|f| f.print encode(val)}
+    path_for(key).open("wb+"){|f| f.print encode(val)}
   end
 
   def keys

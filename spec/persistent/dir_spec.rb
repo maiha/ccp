@@ -137,12 +137,25 @@ describe Ccp::Persistent::Dir do
     end
   end
 
-  it "should save data into storage and load it" do
-    kvs = Ccp::Persistent::Dir.new(db1, :json)
-    kvs[:foo] = "[1,2,3]"
+  context "(:json)" do
+    it "should save data into storage and load it" do
+      kvs = Ccp::Persistent::Dir.new(db1, :json)
+      kvs[:foo] = "[1,2,3]"
 
-    FileUtils.mv(db1, db2)
-    kvs = Ccp::Persistent::Dir.new(db2, :json)
-    kvs[:foo].should == "[1,2,3]"
+      FileUtils.mv(db1, db2)
+      kvs = Ccp::Persistent::Dir.new(db2, :json)
+      kvs[:foo].should == "[1,2,3]"
+    end
+  end
+
+  context "(:msgpack)" do
+    it "should save data into storage and load it" do
+      kvs = Ccp::Persistent::Dir.new(db1, :msgpack)
+      kvs[:flag] = [false, [], true, 1.2]
+
+      FileUtils.mv(db1, db2)
+      kvs = Ccp::Persistent::Dir.new(db2, :msgpack)
+      kvs[:flag].should == [false, [], true, 1.2]
+    end
   end
 end

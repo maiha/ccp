@@ -8,15 +8,15 @@ describe "Ccp::Commands::Core" do
     end
 
     context "(:fixture_save=>true)" do
-      it "should generate stub/mock fixtures in tmp/fixtures as json files" do
+      it "should generate stub/mock fixtures in tmp/fixtures as msgpack files" do
         path = Pathname("tmp/fixtures")
         data = {:a=>"a", :b=>"b", :x=>1, :y=>2}
         opts = {:fixture_save=>true}
 
         TSFC.execute(data.merge(opts))
 
-        load_fixture(path + "tsfc/stub.json").should == {"a" => "a"}
-        load_fixture(path + "tsfc/mock.json").should == {"x" => 10}
+        Ccp::Persistent::Dir.new(path + "tsfc/stub.msgpack", :msgpack).read.should == {"a" => "a"}
+        Ccp::Persistent::Dir.new(path + "tsfc/mock.msgpack", :msgpack).read.should == {"x" => 10}
       end
     end
 
@@ -28,21 +28,21 @@ describe "Ccp::Commands::Core" do
 
         TSFC.execute(data.merge(opts))
 
-        load_fixture(path + "tsfc/stub.yaml" ).should == {"a" => "a"}
-        load_fixture(path + "tsfc/mock.yaml").should == {"x" => 10}
+        Ccp::Persistent::Dir.new(path + "tsfc/stub.yaml", :yaml).read.should == {"a" => "a"}
+        Ccp::Persistent::Dir.new(path + "tsfc/mock.yaml", :yaml).read.should == {"x" => 10}
       end
     end
 
     context "(:fixture_save=>true, :fixture_kvs=>:dir)" do
-      it "should generate json files in stub/mock dir" do
+      it "should generate msgpack files in stub/mock dir" do
         path = Pathname("tmp/fixtures")
         data = {:a=>"a", :b=>"b", :x=>1, :y=>2}
         opts = {:fixture_save=>true, :fixture_kvs=>:dir}
 
         TSFC.execute(data.merge(opts))
 
-        load_fixture(path + "tsfc/stub.json/a.json" ).should == "a"
-        load_fixture(path + "tsfc/mock.json/x.json").should == 10
+        load_fixture(path + "tsfc/stub.msgpack/a.msgpack").should == "a"
+        load_fixture(path + "tsfc/mock.msgpack/x.msgpack").should == 10
       end
     end
   end
