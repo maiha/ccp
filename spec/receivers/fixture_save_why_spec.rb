@@ -13,7 +13,7 @@ describe Ccp::Commands::Composite do
     end
 
     def created_fixtures
-      Dir.chdir(FIXTURE_ROOT){Dir["*/stub.json"].map{|i| File.dirname(i)}.sort}
+      Dir.chdir(FIXTURE_ROOT){Dir["*/stub.msgpack"].map{|i| File.dirname(i)}.sort}
     rescue Errno::ENOENT
       []
     end

@@ -32,46 +32,46 @@ describe Ccp::Receivers::Fixtures do
   end
 
   describe ".execute" do
-    context "(:fixture_save=>true, :fixture_kvs=>:dir, :fixture_ext=>:json)" do
-      before { @options = {:fixture_save=>true, :fixture_kvs=>:dir, :fixture_ext=>:json} }
+    context "(:fixture_save=>true, :fixture_kvs=>:dir, :fixture_ext=>:msgpack)" do
+      before { @options = {:fixture_save=>true, :fixture_kvs=>:dir, :fixture_ext=>:msgpack} }
 
       it "should create stubs and mocks as dir" do
         Example1::Main.execute(@options)
 
         Pathname("tmp/fixtures/example1").should exist
-        Dir["tmp/**/*.json"].sort.should ==
-          ["tmp/fixtures/example1/calculate_mean/mock.json",
-           "tmp/fixtures/example1/calculate_mean/mock.json/mean.json",
-           "tmp/fixtures/example1/calculate_mean/stub.json",
-           "tmp/fixtures/example1/calculate_mean/stub.json/ints.json",
-           "tmp/fixtures/example1/load_ints/mock.json",
-           "tmp/fixtures/example1/load_ints/mock.json/ints.json",
-           "tmp/fixtures/example1/main/mock.json",
-           "tmp/fixtures/example1/main/mock.json/ints.json",
-           "tmp/fixtures/example1/main/mock.json/mean.json",
-           "tmp/fixtures/example1/main/stub.json",
-           "tmp/fixtures/example1/main/stub.json/ints.json"]
+        Dir["tmp/**/*.msgpack"].sort.should ==
+          ["tmp/fixtures/example1/calculate_mean/mock.msgpack",
+           "tmp/fixtures/example1/calculate_mean/mock.msgpack/mean.msgpack",
+           "tmp/fixtures/example1/calculate_mean/stub.msgpack",
+           "tmp/fixtures/example1/calculate_mean/stub.msgpack/ints.msgpack",
+           "tmp/fixtures/example1/load_ints/mock.msgpack",
+           "tmp/fixtures/example1/load_ints/mock.msgpack/ints.msgpack",
+           "tmp/fixtures/example1/main/mock.msgpack",
+           "tmp/fixtures/example1/main/mock.msgpack/ints.msgpack",
+           "tmp/fixtures/example1/main/mock.msgpack/mean.msgpack",
+           "tmp/fixtures/example1/main/stub.msgpack",
+           "tmp/fixtures/example1/main/stub.msgpack/ints.msgpack"]
       end
 
       it "should pass all test" do
         Example1::Main.execute(@options)
         lambda {
-          Example1::Main.test
+          Example1::Main.test(:fixture_kvs=>:dir, :fixture_ext=>:msgpack)
         }.should_not raise_error
       end
 
       it "should pass partial test" do
         Example1::Main.execute(@options)
         lambda {
-          Example1::CalculateMean.test
+          Example1::CalculateMean.test(:fixture_kvs=>:dir, :fixture_ext=>:msgpack)
         }.should_not raise_error
       end
       
       it "should raise Typed::NotDefined when partial stub file is deleted" do
         Example1::Main.execute(@options)
-        Pathname("tmp/fixtures/example1/calculate_mean/stub.json/ints.json").unlink
+        Pathname("tmp/fixtures/example1/calculate_mean/stub.msgpack/ints.msgpack").unlink
         lambda {
-          Example1::CalculateMean.test
+          Example1::CalculateMean.test(:fixture_kvs=>:dir, :fixture_ext=>:msgpack)
         }.should raise_error(Typed::NotDefined, /'ints' is not initialized/)
       end
     end

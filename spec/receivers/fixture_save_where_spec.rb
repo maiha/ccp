@@ -8,15 +8,15 @@ describe "Ccp::Commands::Core" do
     end
 
     context "(:fixture_save=>true, :fixture_dir=>...)" do
-      it "should generate stub/mock fixtures in <save_fixture_dir> as json files" do
+      it "should generate stub/mock fixtures in <save_fixture_dir> as msgpack files" do
         path = Pathname("tmp/test/fixtures")
         data = {:a=>"a", :b=>"b", :x=>1, :y=>2}
         opts = {:fixture_save=>true, :fixture_dir=>path.to_s}
 
         TSFC.execute(data.merge(opts))
 
-        load_fixture(path + "tsfc/stub.json").should == {"a" => "a"}
-        load_fixture(path + "tsfc/mock.json").should == {"x" => 10}
+        Ccp::Persistent::Dir.new(path + "tsfc/stub.msgpack", :msgpack).read.should == {"a" => "a"}
+        Ccp::Persistent::Dir.new(path + "tsfc/mock.msgpack", :msgpack).read.should == {"x" => 10}
       end
     end
 
@@ -26,8 +26,8 @@ describe "Ccp::Commands::Core" do
         opts = {:fixture_save=>true}
 
         begin
-          TSFC.stub "tmp/tsfc/in.json"
-          TSFC.mock "tmp/tsfc/out.json"
+          TSFC.stub "tmp/tsfc/in.msgpack"
+          TSFC.mock "tmp/tsfc/out.msgpack"
 
           TSFC.execute(data.merge(opts))
         ensure
@@ -35,11 +35,11 @@ describe "Ccp::Commands::Core" do
           TSFC.mock nil
         end
 
-        load_fixture("tmp/tsfc/in.json").should == {"a" => "a"}
-        load_fixture("tmp/tsfc/out.json").should == {"x" => 10}
+        Ccp::Persistent::Dir.new("tmp/tsfc/in.msgpack" , :msgpack).read.should == {"a" => "a"}
+        Ccp::Persistent::Dir.new("tmp/tsfc/out.msgpack", :msgpack).read.should == {"x" => 10}
       end
 
-      it "should generate stub/mock fixtures in <dir> as json files" do
+      it "should generate stub/mock fixtures in <dir> as msgpack files" do
         data = {:a=>"a", :b=>"b", :x=>1, :y=>2}
         opts = {:fixture_save=>true}
 
@@ -51,8 +51,8 @@ describe "Ccp::Commands::Core" do
           TSFC.dir nil
         end
 
-        load_fixture("tmp/foo/tsfc/stub.json").should == {"a" => "a"}
-        load_fixture("tmp/foo/tsfc/mock.json").should == {"x" => 10}
+        Ccp::Persistent::Dir.new("tmp/foo/tsfc/stub.msgpack", :msgpack).read.should == {"a" => "a"}
+        Ccp::Persistent::Dir.new("tmp/foo/tsfc/mock.msgpack", :msgpack).read.should == {"x" => 10}
       end
     end
   end

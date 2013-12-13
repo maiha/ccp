@@ -21,8 +21,8 @@ describe Ccp::Invokers::Base do
       it "should ignore :logger in default" do
         ULI.execute(:a=>"a", :fixture_save=>true)
 
-        load_fixture("tmp/fixtures/uli/stub.json").should == {"a" => "a"}
-        load_fixture("tmp/fixtures/uli/mock.json").should == {"x" => 10}
+        Ccp::Persistent::Dir.new("tmp/fixtures/uli/stub.msgpack", :msgpack).read.should == {"a" => "a"}
+        Ccp::Persistent::Dir.new("tmp/fixtures/uli/mock.msgpack", :msgpack).read.should == {"x" => 10}
       end
     end
   end

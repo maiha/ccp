@@ -13,7 +13,8 @@ describe Cmd1 do
     end
 
     def created_keys
-      load_fixture(FIXTURE_PATH + "stub.json").keys.sort
+      path = FIXTURE_PATH + "stub.msgpack"
+      Ccp::Persistent::Dir.new(path, :msgpack).read.keys.sort
     rescue Errno::ENOENT
       []
     end

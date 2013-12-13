@@ -29,19 +29,19 @@ describe Ccp::Receivers::Fixtures do
       it "should test CRFC1, CRFC2, CRFF in order" do
         lambda {
           CRFCC.test
-        }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfc1/mock.json")
+        }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfc1/mock.msgpack")
 
-        save_fixture("tmp/fixtures/crfc1/mock.json", "a"=>1)
+        save_fixture("tmp/fixtures/crfc1/mock.msgpack", "a"=>1)
         lambda {
           CRFCC.test
-        }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfc2/mock.json")
+        }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfc2/mock.msgpack")
 
-        save_fixture("tmp/fixtures/crfc2/mock.json", "b"=>2)
+        save_fixture("tmp/fixtures/crfc2/mock.msgpack", "b"=>2)
         lambda {
           CRFCC.test
-        }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfcc/mock.json")
+        }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfcc/mock.msgpack")
 
-        save_fixture("tmp/fixtures/crfcc/mock.json", {})
+        save_fixture("tmp/fixtures/crfcc/mock.msgpack", {})
         lambda {
           CRFCC.test
         }.should_not raise_error
@@ -51,7 +51,7 @@ describe Ccp::Receivers::Fixtures do
         it "should test only CRFC2" do
           lambda {
             CRFCC.test(:fixture_test=>'CRFC2')
-          }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfc2/mock.json")
+          }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfc2/mock.msgpack")
         end
       end
     end
@@ -61,19 +61,19 @@ describe Ccp::Receivers::Fixtures do
         it "should test CRFC1, CRFC2, CRFF in order" do
           lambda {
             CRFCC.execute(:fixture_test=>true)
-          }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfc1/mock.json")
+          }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfc1/mock.msgpack")
 
-          save_fixture("tmp/fixtures/crfc1/mock.json", "a"=>1)
+          save_fixture("tmp/fixtures/crfc1/mock.msgpack", "a"=>1)
           lambda {
             CRFCC.execute(:fixture_test=>true)
-          }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfc2/mock.json")
+          }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfc2/mock.msgpack")
 
-          save_fixture("tmp/fixtures/crfc2/mock.json", "b"=>2)
+          save_fixture("tmp/fixtures/crfc2/mock.msgpack", "b"=>2)
           lambda {
             CRFCC.execute(:fixture_test=>true)
-          }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfcc/mock.json")
+          }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfcc/mock.msgpack")
 
-          save_fixture("tmp/fixtures/crfcc/mock.json", {})
+          save_fixture("tmp/fixtures/crfcc/mock.msgpack", {})
           lambda {
             CRFCC.execute(:fixture_test=>true)
           }.should_not raise_error
@@ -84,7 +84,7 @@ describe Ccp::Receivers::Fixtures do
         it "should test only CRFC2" do
           lambda {
             CRFCC.execute(:fixture_test=>'CRFC2')
-          }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfc2/mock.json")
+          }.should raise_error(Ccp::Fixtures::NotFound, "tmp/fixtures/crfc2/mock.msgpack")
         end
       end
 

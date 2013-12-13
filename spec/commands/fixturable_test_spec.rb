@@ -2,8 +2,8 @@ require "spec_helper"
 
 describe Ccp::Commands::Fixturable do
   before do
-    @stub = Pathname("tmp/fixtures/square_cmd/stub.json")
-    @mock = Pathname("tmp/fixtures/square_cmd/mock.json")
+    @stub = Pathname("tmp/fixtures/square_cmd/stub.msgpack")
+    @mock = Pathname("tmp/fixtures/square_cmd/mock.msgpack")
     @stub.parent.mkpath
     save_fixture(@stub, "x"=>10)
     save_fixture(@mock, "x"=>100)
@@ -21,13 +21,13 @@ describe Ccp::Commands::Fixturable do
   end
 
   class SquareCmdPass < SquareCmd
-    stub "tmp/fixtures/square_cmd/stub.json"
-    mock "tmp/fixtures/square_cmd/mock.json"
+    stub "tmp/fixtures/square_cmd/stub.msgpack"
+    mock "tmp/fixtures/square_cmd/mock.msgpack"
   end
 
   class SquareCmdFail < SquareCmd
-    stub "tmp/fixtures/square_cmd/stub.json"
-    mock "tmp/fixtures/square_cmd/mock.json"
+    stub "tmp/fixtures/square_cmd/stub.msgpack"
+    mock "tmp/fixtures/square_cmd/mock.msgpack"
 
     def execute
       data[:x] = data[:x] + 1
