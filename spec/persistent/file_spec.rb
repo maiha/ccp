@@ -156,4 +156,42 @@ describe Ccp::Persistent::File do
       db.should_not exist      
     end
   end
+
+  context "(:json)" do
+    def db1; Pathname("tmp/spec/ccp/persistent/file/db1.json"); end
+    def db2; Pathname("tmp/spec/ccp/persistent/file/db2.json"); end
+
+    before do
+      FileUtils.rm_rf(db1)
+      FileUtils.rm_rf(db2)
+    end
+
+    it "should save data into storage and load it" do
+      kvs = Ccp::Persistent::File.new(db1, :json)
+      kvs[:foo] = "[1,2,3]"
+
+      FileUtils.mv(db1, db2)
+      kvs = Ccp::Persistent::File.new(db2, :json)
+      kvs[:foo].should == "[1,2,3]"
+    end
+  end
+
+  context "(:msgpack)" do
+    def db1; Pathname("tmp/spec/ccp/persistent/file/db1.msgpack"); end
+    def db2; Pathname("tmp/spec/ccp/persistent/file/db2.msgpack"); end
+
+    before do
+      FileUtils.rm_rf(db1)
+      FileUtils.rm_rf(db2)
+    end
+
+    it "should save data into storage and load it" do
+      kvs = Ccp::Persistent::File.new(db1, :msgpack)
+      kvs[:flag] = [false, [], true, 1.2]
+
+      FileUtils.mv(db1, db2)
+      kvs = Ccp::Persistent::File.new(db2, :msgpack)
+      kvs[:flag].should == [false, [], true, 1.2]
+    end
+  end
 end

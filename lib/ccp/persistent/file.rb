@@ -55,12 +55,12 @@ class Ccp::Persistent::File < Ccp::Persistent::Base
 
   def read!
     path.exist? or raise Ccp::Persistent::NotFound, path.to_s
-    decode(path.read{}).must(Hash)
+    decode(path.open("rb").read{}).must(Hash)
   end
 
   private
     def raw_write(buf)
       path.parent.mkpath
-      path.open("w+"){|f| f.print buf}
+      path.open("wb+"){|f| f.print buf}
     end
 end

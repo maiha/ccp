@@ -36,19 +36,17 @@ def breadcrumbs_receiver
   return r
 end
 
-def lookup_serializer(extname)
-  {".json"=>JSON, ".yaml"=>YAML, ".msgpack"=>MessagePack}[extname] or raise "no serializers for #{extname}"
-end
-
 def load_fixture(path)
   path = Pathname(path)
-  lookup_serializer(path.extname).load(path.read{})
+  ext  = Ccp::Serializers.lookup(path.extname.sub(/^\./, ''))
+  ext.decode(path.open("rb").read{})
 end
 
 def save_fixture(path, obj)
   path = Pathname(path)
-  buf  = lookup_serializer(path.extname).dump(obj)
-  path.open("w+"){|f| f.print buf}
+  ext  = Ccp::Serializers.lookup(path.extname.sub(/^\./, ''))
+  buf  = ext.encode(obj)
+  path.open("wb+"){|f| f.print buf}
 end
 
 def truncate_pathname(dir)
