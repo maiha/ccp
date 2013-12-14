@@ -17,6 +17,7 @@ unless load_error
         def count         ; R{ super }; end
         def read          ; R{ super }; end
         def write(h)      ; W{ super }; end
+        def clear         ; W{ super }; end
 
         # enum
         def each(&b)      ; R{ super }; end

@@ -80,6 +80,11 @@ module Ccp
           return h
         end
 
+        def clear
+          tryW("clear")
+          @db.clear or tokyo_error!("clear: ")
+        end
+
         ######################################################################
         ### iterator
 
