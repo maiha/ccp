@@ -35,6 +35,7 @@ module Ccp
       # bulk operation
       def read     ; keys.inject({}){|h,k| h[k] = get(k); h }           ; end
       def write(h) ; h.each_pair{|k,v| set(k,v)}                        ; end
+      def clear    ; keys.each{|k| del(k)}                              ; end
     end
   end
 end
