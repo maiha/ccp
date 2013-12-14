@@ -94,6 +94,18 @@ Ccp::Kvs.each do |klass|
       end
     end
 
+    describe "#clear" do
+      specify do
+        kvs.touch
+        kvs.codec! :json
+        kvs.write("a"=>1)
+        kvs["a"].should == 1
+        kvs.clear
+        kvs.count.should == 0
+        kvs.read.should == {}
+      end
+    end
+
     describe "#codec!" do
       specify "return self" do
         kvs.codec!(:msgpack).should == kvs

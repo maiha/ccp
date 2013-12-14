@@ -13,6 +13,7 @@ module Ccp
       def set(k,v) ; @db[k.to_s] = encode(v).to_s; end
       def del(k)   ; decode(@db.delete(k.to_s))  ; end
       def count    ; @db.size                    ; end
+      def clear    ; @db.clear                   ; end
     end
   end
 end
