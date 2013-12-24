@@ -60,6 +60,10 @@ module Ccp
         extend self
       end
 
+      def self.strip(string)
+        string.gsub(/\x1B\[[0-9;]*[mK]/, '')
+      end
+
       include Fore
       extend  Fore
     end
