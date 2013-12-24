@@ -39,7 +39,7 @@ module Ccp
           raise Ccp::Failed, "#{cmd.class} should write #{key} but not found"
         end
         TestFailed::Differ.new(exp, got, key).execute
-        raise Ccp::Failed, "[FATAL] %s expected %s, but got %s" % [cmd.class, exp_type.inspect, got_type.inspect]
+        raise Ccp::Failed, "[FATAL] %s expected %s, but got %s" % [cmd.class, exp.class, got.class]
       }
     end
   end
