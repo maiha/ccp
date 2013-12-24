@@ -53,4 +53,13 @@ describe Ccp::Utils::Colorize do
     subject { Object.new.extend(Ccp::Utils::Colorize::Back) }
     it { should be }
   end
+
+  describe ".strip" do
+    delegate :green, :strip, :to=>"Ccp::Utils::Colorize"
+
+    specify "should strip ansi-color codes" do
+      strip(green("foo")).should == "foo"
+      strip(green("foo") + ":" + green("bar") + ";").should == "foo:bar;"
+    end
+  end
 end
