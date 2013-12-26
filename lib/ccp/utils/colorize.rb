@@ -62,23 +62,32 @@ module Ccp
         extend self
       end
 
+      ######################################################################
+      ### Bar
+
       module Bar
         class Progress
-          def initialize(colors, format, size, widths, chars = nil)
+          def initialize(colors, format, size, vals, chars = nil)
             @colors = colors.must.coerced(Array, Symbol=>lambda{|x| [x, :black]}) # [:green, :black]
             @format = format.must(String)               # "Mem[%sMB]"
             @size   = size.must(Fixnum)                 # 73
-            @widths = widths.must(Fixnum, Float, Array) # [4004,24105]
-            @chars  = chars.must(Array)  { ["|", " "] }
+            @vals   = vals.must(Fixnum, Float, Array) # [4004,24105]
+            @chars  = chars.must(Array)  { ["|"] }
+            @count  = @vals.is_a?(Array) ? @vals.size : 1 # value count (fill gaps with Fixnum and Array)
 
-            if @widths.is_a?(Array) and @widths.size != 2
-              raise "widths.size expected %d, but got %d" % [2, @widths.size]
+            if @vals.is_a?(Array) and @vals.size < 2
+              raise "vals.size expected >= %d, but got %d" % [2, @vals.size]
             end
-            @chars.size  == 2 or raise "chars.size expected %d, but got %d" % [2, @chars.size]
-            @colors.size == 2 or raise "colors.size expected %d, but got %d" % [2, @colors.size]
+            if @chars.size < @count
+              @chars += [@chars.last] * (@vals.size - @chars.size)
+            end
+            if @chars.size < @count + 1
+              @chars += [' ']
+            end
+            @colors.size >= 2 or raise "colors.size expected >= %d, but got %d" % [2, @colors.size]
 
-            @label  = label(@widths)                    # "4004/24105"
-            @rate   = rate(@widths)                     # 0.16
+            @label  = label(@vals)                    # "4004/24105"
+            @rates  = rates(@vals)                    # [0.16]
           end
 
           def to_s
@@ -89,7 +98,7 @@ module Ccp
 
           private
             def bar(max)
-              o = @chars.first * ((max * @rate).ceil)   # "||||"
+              o = @chars.first * ((max * @rates).ceil)  # "||||"
               x = @chars.last  * (max - o.size)         # "                  "
               Colorize.__send__(@colors.first, o) + Colorize.__send__(@colors.last, x)
             end
@@ -107,11 +116,15 @@ module Ccp
               end
             end
 
-            def rate(x)
+            def rates(vals)
+              return _rate(vals)
+            end
+
+            def _rate(x)
               r = case x
                   when Fixnum ; x / 100.0
                   when Float  ; x
-                  when Array  ; (v, a) = x; rate(v.to_f/a)
+                  when Array  ; (v, a) = x; _rate(v.to_f/a)
                   else ; raise "error: rate got #{x.class}"
                   end
               return [[0.0, r].max, 1.0].min
@@ -127,6 +140,55 @@ module Ccp
         alias :info    :blue
         alias :warning :yellow
         alias :danger  :red
+
+        extend self
+      end
+
+      ######################################################################
+      ### Meter
+
+      module Meter
+        class Percent < Bar::Progress
+          private
+            def bar(max)
+              buf  = ''
+              sum = 0
+              @rates.each_with_index do |r, i|
+                v = @chars[i]  || @chars.first
+                c = @colors[i] || @chars.first
+                s = (max * r).ceil
+                s = max - sum unless sum + s <= max # validate sum should <= max
+                o = v * s   # "||||"
+                sum += s
+                buf << Colorize.__send__(c, o)
+              end
+              buf << @chars.last * (max - sum)
+              return buf
+            end
+
+            def rates(vals)
+              rs = vals.map{|v| v /= 100.0; [[0.0, v].max, 1.0].min }
+              # validate sum should <= 1.0
+
+              sum = 0.0
+              rs.each_with_index do |r,i|
+                available = 1.0 - sum
+                if r > available
+                  rs[i] = available
+                  (i+1 ... rs.size).each{|_| rs[_] = 0.0}
+                  return rs
+                end
+                sum += r
+              end
+              return rs
+            end
+
+            def label(*)
+              ""
+            end
+        end
+
+        def percent(fmt, size, vals, cols, c = nil) Percent.new(cols, fmt, size, vals, c).to_s; end
 
         extend self
       end
