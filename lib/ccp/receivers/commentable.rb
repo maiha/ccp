@@ -24,10 +24,8 @@ module Ccp
       end
 
       def show_comments(*args)
-        opts   = Optionize.new(args, :output)
-        output = opts[:output] || $stderr
         comments.each_value do |comment|
-          output.puts comment.colorized
+          logger.info comment.colorized
         end
       end
     end

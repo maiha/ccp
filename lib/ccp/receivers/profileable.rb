@@ -31,9 +31,8 @@ module Ccp
       end
 
       def show_profiles(*args, &block)
-        opts   = Optionize.new(args, :benchs, :output)
+        opts   = Optionize.new(args, :benchs)
         benchs = opts[:benchs] || profiles
-        output = opts[:output] || $stderr
 
         # search worst item
         total = 0
@@ -49,7 +48,7 @@ module Ccp
           if block
             block.call(profiled)
           else
-            output.puts profiled
+            logger.info profiled
           end
         end
       end

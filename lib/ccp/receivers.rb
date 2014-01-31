@@ -2,6 +2,7 @@ module Ccp
   module Receivers
     autoload :Core           , 'ccp/receivers/core'
     autoload :Base           , 'ccp/receivers/base'
+    autoload :Loggable       , 'ccp/receivers/loggable'
     autoload :Global         , 'ccp/receivers/global'
     autoload :Settings       , 'ccp/receivers/settings'
     autoload :Variables      , 'ccp/receivers/variables'

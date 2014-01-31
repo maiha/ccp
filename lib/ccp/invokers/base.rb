@@ -1,5 +1,3 @@
-require 'logger'
-
 module Ccp
   module Invokers
     class Base
@@ -15,7 +13,7 @@ module Ccp
 
       profile false
       comment true
-      logger  Logger.new($stderr)
+      logger  Logger.new(STDOUT)
 
       ######################################################################
       ### Class Methods
