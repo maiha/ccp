@@ -16,8 +16,7 @@ module Ccp
         end
 
         def notify_skip(cmd)
-          @logger ||= data.set?(:logger) ? data[:logger] : Logger.new(STDOUT)
-          @logger.debug Utils::Colorize.pink("[SKIP] #{cmd.class}")
+          logger.debug Utils::Colorize.pink("[SKIP] #{cmd.class}")
         end
     end
   end

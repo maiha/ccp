@@ -1,3 +1,4 @@
+require 'logger'
 require "typed"
 require "pathname"
 require "dsl_accessor"

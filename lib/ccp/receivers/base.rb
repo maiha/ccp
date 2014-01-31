@@ -2,6 +2,7 @@ module Ccp
   module Receivers
     class Base
       include Core
+      include Loggable
       include Settings
       include Variables
       include Commentable
