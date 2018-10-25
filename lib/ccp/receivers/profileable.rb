@@ -22,7 +22,10 @@ module Ccp
         when Ccp::Commands::Composite
           # no profiles
         else
-          profiles << Profile.new(cmd, "execute", (Time.new - start).to_f)
+          profile = Profile.new(cmd, "execute", (Time.new - start).to_f)
+          profiles << profile
+
+          cmd.on_profiled(profile) if cmd.respond_to?(:on_profiled)
         end
       end
 
