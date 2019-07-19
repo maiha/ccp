@@ -43,6 +43,16 @@ module Ccp
       )
     end
 
+    def close_table(name)
+      t = @tables[name.to_s]
+      if t && t.close
+        @tables.delete(name.to_s)
+        true
+      else
+        false
+      end
+    end
+
     def close
       @tables.each_pair do |_,kvs|
         kvs.close
