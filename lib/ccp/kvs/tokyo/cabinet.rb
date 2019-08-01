@@ -33,6 +33,12 @@ module Ccp
             tokyo_error!("set(%s): " % k)
         end
 
+        def set!(k,v)
+          val = encode(v)
+          @db[k.to_s] = val or
+            tokyo_error!("set!(%s): " % k)
+        end
+
         def del(k)
           tryW("del")
           v = @db[k.to_s]
