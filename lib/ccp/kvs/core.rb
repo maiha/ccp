@@ -3,6 +3,7 @@ module Ccp
     module Core
       def get(k)   ; raise NotImplementedError, "subclass resposibility"; end
       def set(k,v) ; raise NotImplementedError, "subclass resposibility"; end
+      def set!(k,v); raise NotImplementedError, "subclass resposibility"; end
       def del(k)   ; raise NotImplementedError, "subclass resposibility"; end
       def keys     ; raise NotImplementedError, "subclass resposibility"; end
       def exist?(k); !! get(k)                                          ; end

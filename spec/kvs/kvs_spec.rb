@@ -111,5 +111,15 @@ Ccp::Kvs.each do |klass|
         kvs.codec!(:msgpack).should == kvs
       end
     end
+
+    describe "#set!" do
+      specify do
+        kvs.W! if klass.ext != "hash"
+        kvs.codec! :json
+        kvs.count.should == 0
+        kvs.set!("a", 1)
+        kvs["a"].should == 1
+      end
+    end
   end
 end
