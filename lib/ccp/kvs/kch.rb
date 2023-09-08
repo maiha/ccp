@@ -13,6 +13,7 @@ unless load_error
         # core
         def get(k)        ; R{ super }; end
         def set(k,v)      ; W{ super }; end
+        def set!(k,v)     ;    super  ; end
         def del(k)        ; W{ super }; end
         def count         ; R{ super }; end
         def read          ; R{ super }; end
