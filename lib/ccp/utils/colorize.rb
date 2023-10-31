@@ -70,10 +70,10 @@ module Ccp
           def initialize(colors, format, size, vals, chars = nil)
             @colors = colors.must.coerced(Array, Symbol=>lambda{|x| [x, :black]}) # [:green, :black]
             @format = format.must(String)               # "Mem[%sMB]"
-            @size   = size.must(Fixnum)                 # 73
-            @vals   = vals.must(Fixnum, Float, Array) # [4004,24105]
+            @size   = size.must(Integer)                # 73
+            @vals   = vals.must(Integer, Float, Array) # [4004,24105]
             @chars  = chars.must(Array)  { ["|"] }
-            @count  = @vals.is_a?(Array) ? @vals.size : 1 # value count (fill gaps with Fixnum and Array)
+            @count  = @vals.is_a?(Array) ? @vals.size : 1 # value count (fill gaps with Integer and Array)
 
             if @vals.is_a?(Array) and @vals.size < 2
               raise "vals.size expected >= %d, but got %d" % [2, @vals.size]
@@ -122,7 +122,7 @@ module Ccp
 
             def _rate(x)
               r = case x
-                  when Fixnum ; x / 100.0
+                  when Integer ; x / 100.0
                   when Float  ; x
                   when Array  ; (v, a) = x; _rate(v.to_f/a)
                   else ; raise "error: rate got #{x.class}"
